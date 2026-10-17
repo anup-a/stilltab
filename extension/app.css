@@ -437,7 +437,8 @@ body[data-scene="dusk"]  { --scene: url(scenes/dusk.jpg); }
 body[data-scene="night"] { --scene: url(scenes/night.jpg); }
 
 /* color-scheme on the root too: an iframe whose scheme differs from its host's gets an opaque backdrop. */
-html:has(body[data-look="scene"]) { color-scheme: dark; }
+:root { color-scheme: light; }
+:root:has(body[data-theme="dark"]), :root:has(body[data-look="scene"]) { color-scheme: dark; }
 body[data-look="scene"] {
   color-scheme: dark;
   --ink: #fff; --ink-2: rgba(255, 255, 255, 0.82); --ink-3: rgba(255, 255, 255, 0.6);
@@ -469,7 +470,7 @@ body[data-look="scene"] .row:hover .chev { opacity: 0; }
 body[data-look="scene"] .reading-toggle { color: var(--ink); }
 /* A matte around the photo, like a print: the scene sits inset with rounded corners. */
 body[data-page="newtab"][data-look="scene"] { background: #f4f3f0; }
-body[data-page="newtab"][data-look="scene"][data-scene="night"] { background: #0c0b11; }
+body[data-page="newtab"][data-look="scene"][data-theme="dark"] { background: #0c0b11; } /* night, or system dark */
 body[data-page="newtab"][data-look="scene"] .sky { inset: 10px; border-radius: 22px; }
 body[data-page="newtab"][data-look="scene"] .drawer { top: 10px; right: 10px; bottom: 10px; border-radius: 0 22px 22px 0; overflow: hidden; }
 body[data-page="newtab"][data-look="scene"] .reading-toggle { top: 24px; right: 26px; }
