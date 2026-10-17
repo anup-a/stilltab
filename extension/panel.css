@@ -95,7 +95,6 @@ main {
 .brief {
   margin: 14px 0 0; max-width: 34em;
   font-size: 17px; color: var(--ink-2);
-  animation: rise 900ms var(--ease) both;
 }
 
 .search {
@@ -156,7 +155,6 @@ main {
   background: var(--card); border: 1px solid var(--card-edge);
   box-shadow: var(--card-shadow); backdrop-filter: blur(20px);
   font-size: 14px;
-  animation: rise 700ms var(--ease) both;
 }
 .notice[hidden] { display: none; }
 .notice .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--calm); box-shadow: 0 0 0 4px color-mix(in srgb, var(--calm) 22%, transparent); }
@@ -187,8 +185,6 @@ main {
 .row {
   position: relative;
   border-radius: 14px;
-  animation: rise 650ms var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 60ms);
   transition: background 300ms var(--ease);
 }
 .row:hover, .row[data-open="true"] { background: color-mix(in srgb, var(--card) 70%, transparent); }
@@ -259,7 +255,7 @@ main {
 
 /* --- today's reading ------------------------------------------------ */
 
-.news { width: min(100%, 560px); margin: 44px auto 0; animation: rise 800ms var(--ease) both; }
+.news { width: min(100%, 560px); margin: 44px auto 0; }
 .news[hidden] { display: none; }
 .news-head { display: flex; align-items: center; justify-content: space-between; }
 .news-head .group-label { margin: 0; }
@@ -291,7 +287,6 @@ main {
 
 .news-list { list-style: none; margin: 4px 0 0; padding: 0; }
 .story-row[hidden] { display: none; }
-.story-row { animation: rise 600ms var(--ease) both; animation-delay: calc(var(--i, 0) * 40ms); }
 .story {
   display: block; padding: 10px 14px; border-radius: 14px; text-decoration: none;
   transition: background 300ms var(--ease);
@@ -313,7 +308,7 @@ main {
 
 /* --- resting + status ------------------------------------------------- */
 
-.resting { margin-top: 64px; text-align: center; animation: rise 900ms var(--ease) both; }
+.resting { margin-top: 64px; text-align: center; }
 .resting[hidden] { display: none; }
 .resting-title { margin: 0; font: 400 22px var(--serif); color: var(--ink-2); }
 .resting-sub { margin: 8px 0 0; font-size: 14px; color: var(--ink-3); }
@@ -327,11 +322,42 @@ main {
 .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
 .status[data-state="live"] .pulse { background: var(--good); animation: breathe 4s ease-in-out infinite; }
 
+/* Motion only for what actually changed: new lines, a new brief, fresh headlines. */
+.enter { animation: rise 600ms var(--ease) both; }
+
 @keyframes rise { from { opacity: 0; transform: translateY(10px); filter: blur(4px); } }
 @keyframes fall { to { opacity: 0; transform: translateY(6px) scale(0.98); filter: blur(4px); } }
 @keyframes breathe { 50% { opacity: 0.35; } }
 
-@media (max-width: 680px) { .row > .x { right: 4px; } }
+@media (max-width: 680px) {
+  .row > .x { right: 6px; top: 8px; }
+  .row:hover .chev { opacity: 0; }
+}
+
+/* --- side panel (narrow) ---------------------------------------------- */
+
+@media (max-width: 560px) {
+  main { padding: 28px 14px 56px; }
+  .orb { filter: blur(50px); }
+  .time { font-size: 11px; }
+  .greet { margin-top: 8px; font-size: 30px; }
+  .brief { margin-top: 8px; font-size: 14px; }
+  .search { margin-top: 20px; height: 44px; padding: 0 16px; }
+  .search input { font-size: 14px; }
+  .ask { gap: 6px; margin-top: 12px; }
+  .ai { width: 32px; height: 32px; padding: 0; justify-content: center; }
+  .ai span { display: none; } /* icon only; the name is in the tooltip */
+  .ai img { filter: none; opacity: 1; }
+  .notice { margin-top: 18px; font-size: 13px; }
+  .column, .news { margin-top: 30px; }
+  .group { margin-top: 22px; }
+  .group-label, .row-main, .story, .news-foot { padding-left: 10px; padding-right: 10px; }
+  .row-more-inner > *, .row-more-inner > .list { padding-left: 10px; padding-right: 10px; }
+  .row-title { font-size: 14.5px; }
+  .row-meta { font-size: 13.5px; }
+  .story-title { font-size: 14px; }
+  .status { position: static; justify-content: center; margin: 0 0 18px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; }

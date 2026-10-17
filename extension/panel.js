@@ -1,6 +1,25 @@
 // Nirvana new tab: renders whatever the agents put in state, live.
 
-const API = location.protocol.startsWith('http') ? '' : 'http://127.0.0.1:7777'
+const IN_EXTENSION = location.protocol === 'chrome-extension:'
+const API = IN_EXTENSION ? 'http://127.0.0.1:7777' : ''
+
+// In the side panel a plain link would navigate the panel itself. Open it in a tab instead.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest?.('a[href]')
+  if (!a || !IN_EXTENSION || !/^https?:/.test(a.href)) return
+  e.preventDefault()
+  chrome.tabs.create({ url: a.href, active: !(e.metaKey || e.ctrlKey) })
+})
+
+// Tell the background worker we're open, so the toolbar button can close us.
+if (IN_EXTENSION && chrome.runtime?.connect) {
+  const link = () => {
+    const port = chrome.runtime.connect({ name: 'panel' })
+    chrome.windows.getCurrent((w) => port.postMessage({ windowId: w.id }))
+    port.onDisconnect.addListener(() => setTimeout(link, 500)) // worker restarted
+  }
+  link()
+}
 const $ = (id) => document.getElementById(id)
 const column = $('column')
 const rows = new Map() // id -> { el, sig }
@@ -36,8 +55,10 @@ $('search').addEventListener('submit', (e) => {
   e.preventDefault()
   const text = $('q').value.trim()
   if (!text) return
-  if (globalThis.chrome?.search?.query) chrome.search.query({ text, disposition: 'CURRENT_TAB' })
+  if (IN_EXTENSION) chrome.search.query({ text, disposition: 'NEW_TAB' })
   else location.href = `https://www.google.com/search?q=${encodeURIComponent(text)}`
+  $('q').value = ''
+  syncAsk()
 })
 
 // --- ask an AI: type, then pick who answers ------------------------------
@@ -102,13 +123,22 @@ function connect() {
   const es = new EventSource(`${API}/api/events`)
   es.onmessage = (e) => {
     setStatus('live', 'agents connected')
+    localStorage.setItem('nirvana:state', e.data)
     render(JSON.parse(e.data))
   }
-  es.addEventListener('news', (e) => renderNews(JSON.parse(e.data)))
+  es.addEventListener('news', (e) => {
+    localStorage.setItem('nirvana:news', e.data)
+    renderNews(JSON.parse(e.data))
+  })
   es.onerror = () => {
     setStatus('off', 'agents resting')
-    resting(true)
+    if (!rows.size) resting(true) // keep what's on screen; it reconnects by itself
   }
+}
+
+// Paint the last known state instantly, without animation, then go live.
+for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (d) => renderNews(d)]]) {
+  try { const d = JSON.parse(localStorage.getItem(key)); if (d) fn(d) } catch {}
 }
 connect()
 
@@ -143,7 +173,7 @@ function render(state) {
   if (brief.textContent !== (state.brief || '')) {
     brief.textContent = state.brief || ''
     brief.hidden = !state.brief
-    brief.style.animation = 'none'; brief.offsetWidth; brief.style.animation = ''
+    if (!firstPaint) enter(brief)
   }
 
   const notice = $('notice')
@@ -173,8 +203,8 @@ function render(state) {
       let el = have?.el
       if (have?.sig !== sig) {
         el = row(w)
-        el.style.setProperty('--i', firstPaint ? i : 0)
-        if (have) { el.style.animation = 'none'; have.el.replaceWith(el) }
+        if (have) have.el.replaceWith(el) // an update swaps in place, quietly
+        else if (!firstPaint) enter(el) // only genuinely new lines arrive with motion
         rows.set(id, { el, sig })
       }
       if (el.parentNode !== box || box.children[members.indexOf(id)] !== el) box.append(el)
@@ -184,6 +214,10 @@ function render(state) {
 
   resting(ids.length === 0 && !state.notice, true)
   firstPaint = false
+}
+
+function enter(el) {
+  el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter')
 }
 
 function leave(el) {
@@ -308,6 +342,7 @@ const SHOWN = 5
 let newsSig = ''
 let newsExpanded = false
 let news = null
+let seenStories = null // urls already shown; null until first paint
 
 function renderNews(n) {
   const sig = JSON.stringify(n)
@@ -343,11 +378,11 @@ function renderNews(n) {
           h('img', { src: `https://www.google.com/s2/favicons?domain=${host(it.url)}&sz=32`, alt: '', width: 14, height: 14 }),
           h('span', {}, [it.source, ago(it.publishedAt)].filter(Boolean).join(' · '))))
       a.addEventListener('click', () => act({ type: 'open', id: 'news', value: it.url }))
-      const li = h('li', { class: 'story-row' }, a)
+      const li = h('li', { class: 'story-row' + (seenStories && !seenStories.has(it.url) ? ' enter' : '') }, a)
       li.hidden = !newsExpanded && i >= SHOWN
-      li.style.setProperty('--i', i)
       return li
     }))
+    seenStories = new Set(n.items.map((it) => it.url))
   }
   const more = $('news-more')
   more.hidden = n.items.length <= SHOWN

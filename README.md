@@ -1,6 +1,6 @@
 # Nirvana (POC)
 
-A calm new tab your agents run. Agents write to it with the `tab` CLI; you see it every time you open a tab. Your clicks (dismiss, tick, open) flow back so agents can tidy it.
+A calm sidebar your agents run. Agents write to it with the `tab` CLI; you open it with the toolbar button or ⌥⇧N, and it stays put while you switch tabs. Your clicks (dismiss, tick, open) flow back so agents can tidy it.
 
 ```
 tab serve &          # local server on 127.0.0.1:7777 (state in ~/.nirvana)
@@ -9,11 +9,12 @@ tab help
 ```
 
 **Chrome:** `chrome://extensions` → Developer mode → Load unpacked → `extension/`.
-**Without the extension:** open http://127.0.0.1:7777 (or set it as your homepage).
+Then click the toolbar button (pin it) or press ⌥⇧N to toggle. Change the shortcut at `chrome://extensions/shortcuts`.
+**Without the extension:** open http://127.0.0.1:7777.
 
 - `bin/tab.mjs` — CLI agents call (`pin`, `set`, `brief`, `notice`, `layout`, `read`, `events`, …)
 - `lib/server.mjs` — state file → live updates (SSE); serves sandboxed HTML widgets at `/w/:id`
-- `extension/` — MV3 new tab; sky follows time of day (dawn, day, dusk, night)
+- `extension/` — MV3 side panel (`panel.html`, `background.js` toggles it); paints from cache, animates only what changed; sky follows time of day
 - `lib/news.mjs` — Today's reading: RSS/Atom presets per topic (tech, ai, science, design, business, world, sports) + custom feeds, refreshed once a day, interleaved so no source dominates
 - `skill/SKILL.md` — teaches agents the rules (calm, ≤6 widgets, use `--ttl`, read `events`)
 

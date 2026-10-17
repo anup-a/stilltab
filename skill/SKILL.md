@@ -1,11 +1,11 @@
 ---
 name: nirvana-tab
-description: Put things on the user's new tab with the `tab` CLI — what finished, what needs review, live stats, small tools. Use when work completes in the background, when something is waiting on the user, or when they ask to "put it on my new tab".
+description: Put things in the user's Nirvana sidebar with the `tab` CLI — what finished, what needs review, live stats, small tools. Use when work completes in the background, when something is waiting on the user, or when they ask to "put it on my sidebar".
 ---
 
-# The user's new tab is yours to keep tidy
+# The user's sidebar is yours to keep tidy
 
-Every time the user opens a browser tab they see a calm page: greeting, one-line brief, search, then one quiet column of lines you control, grouped as **Needs you**, **Coming up** and **Lately**. Each widget is a single line (title + short meta like `20 days` or `5 open`); lists, notes and details expand on click. Treat it as a quiet shared desk, not a notification channel.
+When the user opens their browser sidebar they see a calm page: greeting, one-line brief, search, then one quiet column of lines you control, grouped as **Needs you**, **Coming up** and **Lately**. Each widget is a single line (title + short meta like `20 days` or `5 open`); lists, notes and details expand on click. Treat it as a quiet shared desk, not a notification channel.
 
 ## Rules
 - Calm over complete. Show at most ~6 lines. Remove what is no longer true.
