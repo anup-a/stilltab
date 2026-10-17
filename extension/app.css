@@ -535,9 +535,9 @@ body[data-look="scene"] .row:hover .chev { opacity: 0; }
 body[data-look="scene"] .reading-toggle { color: var(--ink); }
 /* A matte around the photo, like a print: the scene sits inset with rounded corners. */
 body[data-page="newtab"][data-look="scene"] { background: #36353a; }
-/* The radius follows the window's own corner (big on recent macOS) minus the 10px matte, so the band stays even. */
-body[data-page="newtab"][data-look="scene"] .sky { inset: 10px; border-radius: 30px; }
-body[data-page="newtab"][data-look="scene"] .drawer { top: 10px; right: 10px; bottom: 10px; border-radius: 0 30px 30px 0; overflow: hidden; }
+/* 18px: the same curve as Safari's address bar and toolbar buttons (36pt tall capsules), and close to its window corner. */
+body[data-page="newtab"][data-look="scene"] .sky { inset: 10px; border-radius: 18px; }
+body[data-page="newtab"][data-look="scene"] .drawer { top: 10px; right: 10px; bottom: 10px; border-radius: 0 18px 18px 0; overflow: hidden; }
 body[data-page="newtab"][data-look="scene"] .reading-toggle { top: 24px; right: 26px; }
 body[data-page="newtab"][data-look="scene"] .status { left: 30px; bottom: 24px; }
 body[data-page="newtab"][data-look="scene"] .usage { top: 24px; left: 26px; color: var(--ink); }
