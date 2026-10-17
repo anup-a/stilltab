@@ -73,6 +73,15 @@ if (IS_PANEL && window.parent !== window) {
     }
   })
 }
+// A close button for the reading list, wherever it can actually be closed.
+const feedClose = $('feed-close')
+if (feedClose && window.parent !== window) {
+  feedClose.hidden = false
+  feedClose.addEventListener('click', () => parent.postMessage({ type: 'nirvana-key', key: 'Escape' }, location.origin))
+} else if (feedClose && IN_EXTENSION && chrome.sidePanel?.close) {
+  feedClose.hidden = false
+  feedClose.addEventListener('click', () => chrome.windows.getCurrent((w) => chrome.sidePanel.close({ windowId: w.id })))
+}
 const column = $('column')
 const rows = new Map() // id -> { el, sig }
 const openIds = new Set()
