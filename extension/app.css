@@ -347,6 +347,17 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
 .status[data-state="live"] .pulse { background: var(--good); animation: breathe 4s ease-in-out infinite; }
 
+.agent-hint {
+  position: fixed; right: 20px; bottom: 14px; z-index: 1;
+  display: flex; align-items: baseline; gap: 8px; max-width: min(46vw, 520px);
+  padding: 4px 10px; border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+  font-size: 12px; color: var(--ink-3); white-space: nowrap;
+  transition: color 250ms var(--ease), background 250ms var(--ease);
+}
+.agent-hint-label { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.8; }
+.agent-hint-ask { overflow: hidden; text-overflow: ellipsis; font-family: var(--serif); font-style: italic; font-size: 13px; }
+.agent-hint:hover, .agent-hint:focus-visible { color: var(--ink); background: color-mix(in srgb, var(--card) 70%, transparent); outline: none; }
+
 /* Motion only for what actually changed: new lines, a new brief, fresh headlines. */
 .enter { animation: rise 600ms var(--ease) both; }
 
@@ -380,6 +391,7 @@ body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
 .drawer iframe { width: 100%; height: 100%; border: 0; display: block; }
 @keyframes slide-in { from { transform: translateX(40px); opacity: 0; } }
 @media (max-width: 680px) {
+  .agent-hint { display: none; }
   .reading-toggle span { display: none; }
   .reading-toggle { padding: 0 8px; }
   .drawer { width: 100%; }
@@ -455,6 +467,15 @@ body[data-look="scene"] .column {
 body[data-look="scene"] .row > .x { right: 6px; top: 8px; }
 body[data-look="scene"] .row:hover .chev { opacity: 0; }
 body[data-look="scene"] .reading-toggle { color: var(--ink); }
+/* A matte around the photo, like a print: the scene sits inset with rounded corners. */
+body[data-page="newtab"][data-look="scene"] { background: #f4f3f0; }
+body[data-page="newtab"][data-look="scene"][data-scene="night"] { background: #0c0b11; }
+body[data-page="newtab"][data-look="scene"] .sky { inset: 10px; border-radius: 22px; }
+body[data-page="newtab"][data-look="scene"] .drawer { top: 10px; right: 10px; bottom: 10px; border-radius: 0 22px 22px 0; overflow: hidden; }
+body[data-page="newtab"][data-look="scene"] .reading-toggle { top: 24px; right: 26px; }
+body[data-page="newtab"][data-look="scene"] .status { left: 30px; bottom: 24px; }
+body[data-page="newtab"][data-look="scene"] .agent-hint { right: 24px; bottom: 20px; }
+body[data-page="newtab"][data-look="scene"]:has(.drawer:not([hidden])) .reading-toggle { right: 406px; }
 /* Chrome's side panel can't see the page behind it, so it frosts its own copy of the scene. */
 body[data-page="feed"][data-look="scene"] .sky::before { filter: blur(48px) saturate(1.1); }
 body[data-page="feed"][data-look="scene"] .sky::after { background: rgba(14, 14, 26, 0.42); }

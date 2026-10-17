@@ -165,6 +165,28 @@ $('q')?.addEventListener('input', syncAsk)
 renderAsk(DEFAULT_AIS)
 
 let toastTimer
+// --- "ask your agent": a quiet reminder that this page is theirs to change -------
+// One example a day, bottom right. Clicking copies it to paste into Claude Code, Codex, etc.
+const AGENT_ASKS = [
+  'Put my open PRs on my new tab',
+  'Switch my new tab to the sky theme',
+  'Add GitHub Trending to today\'s reading',
+  'Show a countdown to my next trip on my new tab',
+  'Tidy my new tab: drop anything that\'s done',
+  'Pin tonight\'s build status to my new tab',
+  'Add The Pragmatic Engineer to today\'s reading',
+]
+const hint = $('agent-hint')
+if (hint) {
+  const ask = AGENT_ASKS[Math.floor(Date.now() / 864e5) % AGENT_ASKS.length]
+  hint.append(h('span', { class: 'agent-hint-label' }, 'Ask your agent'), h('span', { class: 'agent-hint-ask' }, `“${ask}”`))
+  hint.hidden = false
+  hint.addEventListener('click', () => {
+    navigator.clipboard?.writeText(ask).catch(() => {})
+    toast('Copied. Paste it to your agent; it changes this page with the tab CLI.')
+  })
+}
+
 function toast(msg) {
   const t = $('toast')
   t.textContent = msg
@@ -397,7 +419,7 @@ addEventListener('message', (e) => {
 
 // --- today's reading -----------------------------------------------------
 
-const TOPIC_NAMES = { tech: 'Tech', ai: 'AI', science: 'Science', design: 'Design', business: 'Business', world: 'World', sports: 'Sports' }
+const TOPIC_NAMES = { tech: 'Tech', ai: 'AI', science: 'Science', design: 'Design', business: 'Business', world: 'World', github: 'GitHub', sports: 'Sports' }
 const topicName = (t) => TOPIC_NAMES[t] || t[0].toUpperCase() + t.slice(1)
 const SHOWN = IS_PANEL ? Infinity : 5 // the panel is all reading; no need to fold
 let newsSig = ''
