@@ -204,6 +204,51 @@ function toast(msg) {
   toastTimer = setTimeout(() => { t.hidden = true }, 2600)
 }
 
+// --- plan usage: one small meter per window, per coding agent -----------
+
+const until = (iso) => {
+  const ms = Date.parse(iso) - Date.now()
+  if (!(ms > 0)) return ''
+  if (ms < 864e5) { const h = Math.floor(ms / 36e5), m = Math.round((ms % 36e5) / 6e4); return `resets in ${h ? `${h}h ` : ''}${m}m` }
+  return `resets ${new Date(iso).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })}`
+}
+const WINDOW_NAME = { '5h': '5-hour window', week: 'This week' }
+
+function renderUsage(u) {
+  const box = $('usage')
+  if (!box) return
+  box.lastUsage = u
+  const tools = u?.tools || []
+  box.hidden = !tools.length
+  box.replaceChildren(...tools.map((t) => {
+    const el = document.createElement('div')
+    el.className = 'usage-tool'
+    const name = Object.assign(document.createElement('span'), { className: 'usage-name', textContent: t.name })
+    el.append(name)
+    if (t.state !== 'ok') {
+      el.append(Object.assign(document.createElement('span'), { className: 'usage-off', textContent: 'signed out' }))
+      el.title = `${t.name}: sign in again to see usage (run ${t.id === 'codex' ? 'codex login' : 'claude'})`
+      return el
+    }
+    const tips = [`${t.name}${t.plan ? ` (${t.plan})` : ''}`]
+    for (const w of t.windows) {
+      const m = document.createElement('span')
+      m.className = 'meter'
+      m.dataset.level = w.used >= 90 ? 'high' : w.used >= 70 ? 'mid' : 'low'
+      m.innerHTML = `<span class="meter-label"></span><span class="meter-bar"><i></i></span><span class="meter-pct"></span>`
+      m.querySelector('.meter-label').textContent = w.label
+      m.querySelector('i').style.width = `${w.used}%`
+      m.querySelector('.meter-pct').textContent = `${w.used}%`
+      el.append(m)
+      tips.push(`${WINDOW_NAME[w.label] || w.label}: ${w.used}% used${w.resetsAt ? `, ${until(w.resetsAt)}` : ''}`)
+    }
+    if (t.asOf) tips.push(`as of ${new Date(t.asOf).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })}`)
+    el.title = tips.join('\n')
+    return el
+  }))
+}
+setInterval(() => { const b = $('usage'); if (b?.lastUsage) renderUsage(b.lastUsage) }, 6e4) // keep "resets in" honest
+
 // --- live state ----------------------------------------------------------
 
 function connect() {
@@ -214,6 +259,10 @@ function connect() {
     localStorage.setItem('nirvana:state', e.data)
     render(JSON.parse(e.data))
   }
+  es.addEventListener('usage', (e) => {
+    localStorage.setItem('nirvana:usage', e.data)
+    renderUsage(JSON.parse(e.data))
+  })
   es.addEventListener('news', (e) => {
     localStorage.setItem('nirvana:news', e.data)
     renderNews(JSON.parse(e.data))
@@ -225,7 +274,7 @@ function connect() {
 }
 
 // Paint the last known state instantly, without animation, then go live.
-for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (d) => renderNews(d)]]) {
+for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (d) => renderNews(d)], ['nirvana:usage', (d) => renderUsage(d)]]) {
   try { const d = JSON.parse(localStorage.getItem(key)); if (d) fn(d) } catch {}
 }
 connect()

@@ -368,6 +368,29 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 @keyframes fall { to { opacity: 0; transform: translateY(6px) scale(0.98); filter: blur(4px); } }
 @keyframes breathe { 50% { opacity: 0.35; } }
 
+/* --- plan usage: top left, opposite "Today's reading" --- */
+.usage {
+  position: fixed; top: 18px; left: 20px; z-index: 1;
+  display: flex; align-items: center; gap: 16px;
+  height: 32px; padding: 0 14px; border-radius: 999px;
+  font: 12px var(--sans); color: var(--ink-2); cursor: default;
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
+  backdrop-filter: blur(14px);
+}
+.usage[hidden] { display: none; }
+.usage-tool { display: flex; align-items: center; gap: 9px; }
+.usage-tool + .usage-tool { padding-left: 16px; border-left: 1px solid var(--hair); }
+.usage-name { font-weight: 500; color: var(--ink); }
+.usage-off { color: var(--ink-3); font-style: italic; }
+.meter { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+.meter-label { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.meter-bar { width: 36px; height: 4px; border-radius: 99px; background: color-mix(in srgb, currentColor 18%, transparent); overflow: hidden; }
+.meter-bar i { display: block; height: 100%; border-radius: inherit; background: currentColor; transition: width 600ms var(--ease); }
+.meter-pct { min-width: 2.6em; color: var(--ink-2); }
+.meter[data-level="mid"] .meter-bar i { background: #e0a43a; }
+.meter[data-level="high"] .meter-bar i { background: #e2624f; }
+
 /* --- today's reading: button on the new tab, drawer when there's no side panel --- */
 
 .reading-toggle {
@@ -394,7 +417,7 @@ body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
 .drawer iframe { width: 100%; height: 100%; border: 0; display: block; }
 @keyframes slide-in { from { transform: translateX(40px); opacity: 0; } }
 @media (max-width: 680px) {
-  .agent-hint { display: none; }
+  .agent-hint, .usage { display: none; }
   .reading-toggle span { display: none; }
   .reading-toggle { padding: 0 8px; }
   .drawer { width: 100%; }
@@ -479,6 +502,7 @@ body[data-page="newtab"][data-look="scene"] .sky { inset: 10px; border-radius: 2
 body[data-page="newtab"][data-look="scene"] .drawer { top: 10px; right: 10px; bottom: 10px; border-radius: 0 22px 22px 0; overflow: hidden; }
 body[data-page="newtab"][data-look="scene"] .reading-toggle { top: 24px; right: 26px; }
 body[data-page="newtab"][data-look="scene"] .status { left: 30px; bottom: 24px; }
+body[data-page="newtab"][data-look="scene"] .usage { top: 24px; left: 26px; color: var(--ink); }
 body[data-page="newtab"][data-look="scene"] .agent-hint { right: 24px; bottom: 20px; }
 body[data-page="newtab"][data-look="scene"]:has(.drawer:not([hidden])) .reading-toggle { right: 406px; }
 /* Chrome's side panel can't see the page behind it, so it frosts its own copy of the scene. */
@@ -531,6 +555,7 @@ body[data-photo] .row:hover .chev { opacity: 1; }
 /* the edges stay out of the way until you look at them */
 body[data-photo] .status, body[data-photo] .agent-hint { opacity: 0.7; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); transition: opacity 300ms var(--ease); }
 body[data-photo] .status:hover, body[data-photo] .agent-hint:hover, body[data-photo] .agent-hint:focus-visible { opacity: 1; }
+body[data-photo] .usage { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
 body[data-photo] .reading-toggle { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); }
 
 @media (prefers-reduced-motion: reduce) {
