@@ -1,4 +1,4 @@
-// Nirvana: one script for both pages. Each part runs only if its elements are on the page.
+// Stilltab: one script for both pages. Each part runs only if its elements are on the page.
 //   newtab.html: greeting, search, AI shortcuts, the agents' quiet column
 //   feed.html:   the side panel, today's reading only
 
@@ -60,7 +60,7 @@ if (readingBtn && IN_EXTENSION && chrome.sidePanel) {
   document.addEventListener('keydown', onKey)
   // Keys pressed inside the drawer's iframe arrive as messages.
   window.addEventListener('message', (e) => {
-    if (e.source === drawer.firstChild?.contentWindow && e.data?.type === 'nirvana-key') onKey({ ...e.data, preventDefault() {} })
+    if (e.source === drawer.firstChild?.contentWindow && e.data?.type === 'stilltab-key') onKey({ ...e.data, preventDefault() {} })
   })
 }
 // Inside the web drawer: pass Escape and ⌥⇧N up to the new tab.
@@ -69,7 +69,7 @@ if (IS_PANEL && window.parent !== window) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' || (e.altKey && e.shiftKey && e.code === 'KeyN')) {
       e.preventDefault()
-      parent.postMessage({ type: 'nirvana-key', key: e.key, code: e.code, altKey: e.altKey, shiftKey: e.shiftKey }, location.origin)
+      parent.postMessage({ type: 'stilltab-key', key: e.key, code: e.code, altKey: e.altKey, shiftKey: e.shiftKey }, location.origin)
     }
   })
 }
@@ -77,7 +77,7 @@ if (IS_PANEL && window.parent !== window) {
 const feedClose = $('feed-close')
 if (feedClose && window.parent !== window) {
   feedClose.hidden = false
-  feedClose.addEventListener('click', () => parent.postMessage({ type: 'nirvana-key', key: 'Escape' }, location.origin))
+  feedClose.addEventListener('click', () => parent.postMessage({ type: 'stilltab-key', key: 'Escape' }, location.origin))
 } else if (feedClose && IN_EXTENSION && chrome.sidePanel?.close) {
   feedClose.hidden = false
   feedClose.addEventListener('click', () => chrome.windows.getCurrent((w) => chrome.sidePanel.close({ windowId: w.id })))
@@ -292,7 +292,7 @@ function renderWeather(w) {
 
 // --- first run: hand setup to the user's agent -------------------------------
 
-const SETUP_PROMPT = 'Set up my Nirvana new tab: run `tab onboard` and follow it. If the `tab` command is missing, find the folder I loaded the Nirvana Chrome extension from (it has extension/manifest.json and bin/tab.mjs), put bin/tab.mjs on my PATH as `tab` (npm link in that folder works), then run `tab onboard`.'
+const SETUP_PROMPT = 'Set up my Stilltab new tab: run `tab onboard` and follow it. If the `tab` command is missing, run `npm link` in the folder I loaded the Stilltab extension from (or install it with `npm i -g github:anup-a/stilltab`), then run `tab onboard`.'
 if ($('setup')) {
   $('setup-text').textContent = SETUP_PROMPT
   $('setup-copy').addEventListener('click', () => {
@@ -328,32 +328,32 @@ function connect() {
   es.onmessage = (e) => {
     setStatus('live', 'agents connected')
     if (!column) return
-    localStorage.setItem('nirvana:state', e.data)
+    localStorage.setItem('stilltab:state', e.data)
     render(JSON.parse(e.data))
   }
   es.addEventListener('weather', (e) => {
-    localStorage.setItem('nirvana:weather', e.data)
+    localStorage.setItem('stilltab:weather', e.data)
     renderWeather(JSON.parse(e.data))
   })
   es.addEventListener('usage', (e) => {
-    localStorage.setItem('nirvana:usage', e.data)
+    localStorage.setItem('stilltab:usage', e.data)
     renderUsage(JSON.parse(e.data))
   })
   es.addEventListener('news', (e) => {
-    localStorage.setItem('nirvana:news', e.data)
+    localStorage.setItem('stilltab:news', e.data)
     renderNews(JSON.parse(e.data))
   })
   es.onerror = () => {
     setStatus('off', 'agents resting')
     if (!column || rows.size) return // keep what's on screen; it reconnects by itself
-    const fresh = !localStorage.getItem('nirvana:state') // just installed: nothing has ever run
+    const fresh = !localStorage.getItem('stilltab:state') // just installed: nothing has ever run
     showSetup(fresh)
     resting(!fresh)
   }
 }
 
 // Paint the last known state instantly, without animation, then go live.
-for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (d) => renderNews(d)], ['nirvana:usage', (d) => renderUsage(d)], ['nirvana:weather', (d) => renderWeather(d)]]) {
+for (const [key, fn] of [['stilltab:state', (d) => render(d)], ['stilltab:news', (d) => renderNews(d)], ['stilltab:usage', (d) => renderUsage(d)], ['stilltab:weather', (d) => renderWeather(d)]]) {
   try { const d = JSON.parse(localStorage.getItem(key)); if (d) fn(d) } catch {}
 }
 connect()
@@ -555,7 +555,7 @@ function frame(w) {
 }
 
 addEventListener('message', (e) => {
-  if (e.data?.nirvana !== 'height') return
+  if (e.data?.stilltab !== 'height') return
   for (const f of document.querySelectorAll('iframe.frame')) {
     if (f.contentWindow === e.source) f.style.height = `${Math.min(Math.max(e.data.h, 40), 640)}px`
   }

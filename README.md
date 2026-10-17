@@ -1,4 +1,4 @@
-# Nirvana (POC)
+# Stilltab
 
 A calm new tab your agents run, plus a reading sidebar. Agents write to the new tab with the `tab` CLI. Today's reading lives in Chrome's side panel: toggle it with the "Today's reading" button on the new tab, the toolbar button, or ⌥⇧N, and it stays put while you switch tabs. Opened as a plain web page (http://127.0.0.1:7777, any browser), the same button slides the reading in as a drawer. Your clicks (dismiss, tick, open) flow back so agents can tidy it.
 
@@ -8,7 +8,7 @@ You need Node 20+ and Chrome (or any browser, as a plain page).
 
 1. **Get the code and the `tab` command**
    ```
-   git clone <this repo> ~/nirvana && cd ~/nirvana
+   git clone https://github.com/anup-a/stilltab ~/stilltab && cd ~/stilltab
    npm link            # puts `tab` on your PATH (or: ln -s "$PWD/bin/tab.mjs" ~/.local/bin/tab)
    ```
 2. **Load the extension:** open `chrome://extensions`, turn on Developer mode, click **Load unpacked** and pick the `extension/` folder. Pin the toolbar button if you like (⌥⇧N toggles Today's reading).
@@ -27,7 +27,7 @@ tab show sites on                                  # your most visited sites und
 tab news topics tech ai
 tab theme photo                                    # sky | scene | photo
 tab routine set --every 2h --hours 8-22 --agent claude --brief "Open PRs, CI on main, my next trip"
-tab routine run                                    # once now; log in ~/.nirvana/routine.log
+tab routine run                                    # once now; log in ~/.stilltab/routine.log
 ```
 Change anything later by asking your agent ("hide the weather", "refresh every hour"), or with the same commands. `tab routine off` and `tab autostart off` remove the background jobs.
 

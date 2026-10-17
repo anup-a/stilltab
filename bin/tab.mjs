@@ -171,7 +171,7 @@ function widgetFromFlags(id) {
     section: flags.section ?? null,
     size: flags.size || 'm',
     tone: flags.tone || 'calm',
-    source: flags.source || process.env.NIRVANA_AGENT || null,
+    source: flags.source || process.env.STILLTAB_AGENT || null,
     updatedAt: now(),
     expiresAt: flags.ttl ? later(flags.ttl) : null,
   }
@@ -242,7 +242,7 @@ async function routine([sub]) {
       const next = { ...cur }
       for (const k of ['every', 'hours', 'agent', 'cmd', 'brief']) if (flags[k] !== undefined && flags[k] !== true) next[k] = val(flags[k])
       if (flags.hours && !/^\d{1,2}-\d{1,2}$/.test(next.hours)) throw new Error('--hours looks like 8-22')
-      next.agent ||= process.env.NIRVANA_AGENT || null
+      next.agent ||= process.env.STILLTAB_AGENT || null
       next.external = Boolean(flags.external)
       if (!next.every && !next.external) throw new Error('Say how often: --every 2h (or --external if your own scheduler runs it)')
       const msg = next.external ? 'Brief saved. Your own scheduler runs `tab routine prompt`.' : r.installRoutine(next)

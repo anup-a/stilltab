@@ -1,5 +1,5 @@
 ---
-name: nirvana-tab
+name: stilltab
 description: Put things on the user's new tab with the `tab` CLI — what finished, what needs review, live stats, small tools. Use when work completes in the background, when something is waiting on the user, or when they ask to "put it on my new tab".
 ---
 

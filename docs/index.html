@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stilltab: a calm new tab your agents run</title>
+  <meta name="description" content="Stilltab turns every new browser tab into one quiet page your AI agents keep current: what needs you, what's coming up, what just finished. Works with Claude Code, Codex and any agent that can run a command.">
+  <meta property="og:title" content="Stilltab: a calm new tab your agents run">
+  <meta property="og:description" content="One quiet page your agents keep current, every time you open a tab.">
+  <meta property="og:image" content="https://anup-a.github.io/stilltab/img/hero-dusk.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%2336353a'/><circle cx='32' cy='34' r='12' fill='%23f4c58a'/></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Stilltab</a>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a class="pill" href="https://github.com/anup-a/stilltab">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">For people who work with AI agents</p>
+      <h1>A calm new tab<br>your agents run.</h1>
+      <p class="lede">Every time you open a tab, one quiet page: what needs you, what's coming up, what just finished. Your agents keep it current, so you don't have to go looking.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/anup-a/stilltab">Get it on GitHub</a>
+        <a class="btn" href="#how">How it works</a>
+      </div>
+      <figure class="shot hero-shot">
+        <img src="img/hero-dusk.jpg" alt="The Stilltab new tab at dusk: a greeting, a one-line brief, search, AI shortcuts, and short lists titled Needs you, Coming up and Lately." width="2200" height="1375">
+      </figure>
+    </section>
+
+    <section class="how" id="how">
+      <h2>Set up in one paste</h2>
+      <p class="section-lede">No settings screens. Your agent asks what you care about, sets the page up, and keeps it fresh on a schedule you choose.</p>
+      <ol class="steps">
+        <li>
+          <span class="num">1</span>
+          <h3>Install</h3>
+          <p>Clone the repo, link the <code>tab</code> command, and load the extension in Chrome. It also works as a plain page in any browser.</p>
+<pre><code>git clone https://github.com/anup-a/stilltab
+cd stilltab &amp;&amp; npm link</code></pre>
+          <p class="small">Then <code>chrome://extensions</code>, Developer mode, Load unpacked, pick <code>extension/</code>.</p>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <h3>Paste one prompt</h3>
+          <p>Your first new tab shows a short prompt. Paste it into Claude Code, Codex or any agent in your terminal. It asks which parts of your life to look after, how often to refresh, and what the page should show.</p>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <h3>It stays current</h3>
+          <p>Your agent runs on its own every few hours. Each run it looks at your repos, calendar, inbox and notes, decides what matters most right now, and tidies the page.</p>
+        </li>
+      </ol>
+      <figure class="shot">
+        <img src="img/setup.jpg" alt="The setup popup on a new tab: Let your agent set up this tab, with a prompt to copy into your agent." loading="lazy" width="2200" height="1375">
+      </figure>
+    </section>
+
+    <section class="features" id="features">
+      <h2>One quiet page, not another dashboard</h2>
+      <p class="section-lede">Short lines instead of widgets. At most a handful at a time. Anything that's done leaves on its own.</p>
+
+      <div class="feature">
+        <div class="copy">
+          <h3>Needs you, coming up, lately</h3>
+          <p>Every item is one line with a short number: <em>3 open</em>, <em>12 days</em>, <em>214 / 214</em>. Click to open the details. Tick, dismiss or reorder, and your agent sees it next run and adapts.</p>
+        </div>
+        <figure class="shot"><img src="img/expanded.jpg" alt="A line expanded to show three pull requests waiting for review." loading="lazy" width="2200" height="1375"></figure>
+      </div>
+
+      <div class="feature flip">
+        <div class="copy">
+          <h3>Today's reading, in a side panel</h3>
+          <p>Headlines from the topics you pick, mixed so no one source takes over, refreshed once a day. It opens beside whatever you're reading and stays put as you switch tabs.</p>
+        </div>
+        <figure class="shot"><img src="img/reading.jpg" alt="Today's reading open as a panel on the right with a list of headlines." loading="lazy" width="2200" height="1375"></figure>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Works with any agent</h3>
+          <p>Claude Code, Codex, Gemini CLI, OpenCode, or anything that can run a shell command. They all talk to the page through one small CLI.</p>
+        </div>
+        <div class="card">
+          <h3>Your plan usage, at a glance</h3>
+          <p>How much of your Claude Code and Codex limits you've used this session and this week, with reset times on hover.</p>
+        </div>
+        <div class="card">
+          <h3>Private by default</h3>
+          <p>The page talks to a small server on your own machine. Your tab's contents stay in a file on your computer, not in someone's cloud.</p>
+        </div>
+        <div class="card">
+          <h3>Yours to shape</h3>
+          <p>Weather, AI shortcuts, frequently visited sites, the reading panel: turn each on or off by asking your agent, or with one command.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="looks">
+      <h2>It follows the light</h2>
+      <p class="section-lede">Dawn, day, dusk and night, each with its own photo. Or a soft gradient sky if you'd rather.</p>
+      <div class="gallery">
+        <figure><img src="img/thumb-dawn.jpg" alt="Dawn" loading="lazy"><figcaption>Dawn</figcaption></figure>
+        <figure><img src="img/thumb-day.jpg" alt="Day" loading="lazy"><figcaption>Day</figcaption></figure>
+        <figure><img src="img/thumb-hero-dusk.jpg" alt="Dusk" loading="lazy"><figcaption>Dusk</figcaption></figure>
+        <figure><img src="img/thumb-night.jpg" alt="Night" loading="lazy"><figcaption>Night</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="cli">
+      <div class="copy">
+        <h2>Built for agents</h2>
+        <p class="section-lede">A tiny command line any agent picks up from one help page. Pin a line, update a number, leave a one-line brief.</p>
+        <a class="btn primary" href="https://github.com/anup-a/stilltab#setup">Read the setup guide</a>
+      </div>
+<pre class="terminal"><code><span class="c"># what your agent runs</span>
+tab brief "Two reviews wait on you, and the launch is Thursday."
+tab pin review --title "PRs waiting on you" --items '[…]'
+tab pin trip --title "Flight to Lisbon" --stat "12 days"
+tab set ci --data '{"value":"214 / 214"}'
+tab events        <span class="c"># what you ticked, dismissed or opened</span>
+
+<span class="c"># and how it keeps going</span>
+tab routine set --every 2h --hours 8-22 --agent claude</code></pre>
+    </section>
+
+    <section class="end">
+      <h2>Open a new tab. Breathe out.</h2>
+      <a class="btn primary" href="https://github.com/anup-a/stilltab">Get Stilltab on GitHub</a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Stilltab is an early, open project. Photos from Unsplash.</p>
+    <p><a href="https://github.com/anup-a/stilltab">github.com/anup-a/stilltab</a></p>
+  </footer>
+</body>
+</html>
