@@ -518,8 +518,7 @@ body[data-photo] .search svg { stroke: rgba(255, 255, 255, 0.8); }
 body[data-photo] .ask { opacity: 0; transform: translateY(-4px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
 body[data-photo] .ask.has-text, body[data-photo] .hero:hover .ask, body[data-photo] .ask:focus-within { opacity: 1; transform: none; }
 
-/* the list sits straight on the photo; glass appears only under the line you're on */
-body[data-photo][data-look="scene"] .column { background: none; border: 0; box-shadow: none; backdrop-filter: none; }
+/* the list keeps its frosted card; rows lift with glass on hover */
 body[data-photo] .group-label { color: rgba(255, 255, 255, 0.72); }
 body[data-photo] .row-meta, body[data-photo] .chev { color: rgba(255, 255, 255, 0.8); }
 body[data-photo] .group[data-section="lately"] .row-title { color: rgba(255, 255, 255, 0.8); }
@@ -527,7 +526,6 @@ body[data-photo] .row:hover, body[data-photo] .row[data-open="true"] {
   background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(22px) saturate(1.1);
   text-shadow: none;
 }
-body[data-photo] .row > .x { right: -38px; }
 body[data-photo] .row:hover .chev { opacity: 1; }
 
 /* the edges stay out of the way until you look at them */
