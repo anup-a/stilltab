@@ -519,7 +519,7 @@ body[data-photo] .ask { opacity: 0; transform: translateY(-4px); transition: opa
 body[data-photo] .ask.has-text, body[data-photo] .hero:hover .ask, body[data-photo] .ask:focus-within { opacity: 1; transform: none; }
 
 /* the list sits straight on the photo; glass appears only under the line you're on */
-body[data-photo][data-look="scene"] .column { background: none; border: 0; box-shadow: none; backdrop-filter: none; padding: 0; }
+body[data-photo][data-look="scene"] .column { background: none; border: 0; box-shadow: none; backdrop-filter: none; }
 body[data-photo] .group-label { color: rgba(255, 255, 255, 0.72); }
 body[data-photo] .row-meta, body[data-photo] .chev { color: rgba(255, 255, 255, 0.8); }
 body[data-photo] .group[data-section="lately"] .row-title { color: rgba(255, 255, 255, 0.8); }
