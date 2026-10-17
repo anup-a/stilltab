@@ -370,13 +370,17 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 
 /* --- first run: the setup card --- */
 .setup {
-  width: min(100%, 560px); margin: 44px auto 0; padding: 22px 24px 18px;
-  border-radius: 22px; background: var(--card); border: 1px solid var(--card-edge); box-shadow: var(--card-shadow);
-  text-align: left;
+  width: min(92vw, 560px); margin: auto; padding: 24px 26px 20px;
+  border-radius: 22px; background: var(--card); border: 1px solid var(--card-edge); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
+  color: var(--ink); text-align: left; overflow: visible;
 }
-.setup[hidden] { display: none; }
-.setup:not([hidden]) ~ .resting { display: none; }
-.setup-title { margin: 0; font: 400 22px/1.2 var(--serif); color: var(--ink); }
+.setup[open] { animation: pop 320ms var(--ease); }
+.setup::backdrop { background: rgba(12, 11, 17, 0.45); backdrop-filter: blur(6px); }
+.setup-close { position: absolute; top: 14px; right: 14px; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+.status[role="button"] { cursor: pointer; border-radius: 999px; padding: 4px 8px; margin: -4px -8px; transition: color 250ms var(--ease); }
+.status[role="button"]:hover, .status[role="button"]:focus-visible { color: var(--ink); outline: none; }
+.setup-title { margin: 0 36px 0 0; font: 400 22px/1.2 var(--serif); color: var(--ink); }
 .setup-sub { margin: 8px 0 16px; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
 .setup-prompt {
   position: relative; padding: 14px 16px; padding-right: 86px; border-radius: 14px;
@@ -574,7 +578,7 @@ body[data-photo] .ask { opacity: 0; transform: translateY(-4px); transition: opa
 body[data-photo] .ask.has-text, body[data-photo] .hero:hover .ask, body[data-photo] .ask:focus-within { opacity: 1; transform: none; }
 
 /* the list sits straight on the photo; the setup card is solid, like the matte */
-body[data-photo][data-look="scene"] .setup { background: #36353a; border-color: transparent; box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55); text-shadow: none; }
+body[data-look="scene"] .setup { background: #36353a; border-color: rgba(255, 255, 255, 0.08); color: #fff; text-shadow: none; }
 body[data-photo][data-look="scene"] .column { background: none; border: 0; box-shadow: none; backdrop-filter: none; padding: 0; }
 body[data-photo] .group-label { color: rgba(255, 255, 255, 0.72); }
 body[data-photo] .row-meta, body[data-photo] .chev { color: rgba(255, 255, 255, 0.8); }

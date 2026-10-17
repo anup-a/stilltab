@@ -35,16 +35,6 @@
       </button>
     </div>
 
-    <section class="setup" id="setup" aria-labelledby="setup-title" hidden>
-      <h2 class="setup-title" id="setup-title">Let your agent set up this tab</h2>
-      <p class="setup-sub">Paste this into Claude Code, Codex or any agent in your terminal. It asks what you want to see here and how often to refresh, then sets it up and keeps it current.</p>
-      <div class="setup-prompt">
-        <p id="setup-text"></p>
-        <button class="setup-copy" id="setup-copy" type="button">Copy</button>
-      </div>
-      <button class="setup-skip" id="setup-skip" type="button">I'll do it myself</button>
-    </section>
-
     <div class="column" id="column" aria-live="polite"></div>
 
 
@@ -62,11 +52,22 @@
   </button>
   <aside class="drawer" id="drawer" aria-label="Today's reading" hidden></aside>
 
+  <dialog class="setup" id="setup" aria-labelledby="setup-title">
+    <button class="x setup-close" id="setup-close" type="button" aria-label="Close" title="Close (Esc)"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+    <h2 class="setup-title" id="setup-title">Let your agent set up this tab</h2>
+    <p class="setup-sub">Paste this into Claude Code, Codex or any agent in your terminal. It asks what you want to see here and how often to refresh, then sets it up and keeps it current.</p>
+    <div class="setup-prompt">
+      <p id="setup-text"></p>
+      <button class="setup-copy" id="setup-copy" type="button" autofocus>Copy</button>
+    </div>
+    <button class="setup-skip" id="setup-skip" type="button">I'll do it myself</button>
+  </dialog>
+
   <div class="toast" id="toast" role="status" hidden></div>
 
   <button class="agent-hint" id="agent-hint" hidden title="Copy, then paste it to your agent"></button>
 
-  <footer class="status" id="status"><span class="pulse"></span><span id="status-text">connecting</span></footer>
+  <footer class="status" id="status" role="button" tabindex="0" title="Set up or change what your agents show here"><span class="pulse"></span><span id="status-text">connecting</span></footer>
 
   <script src="app.js"></script>
 </body>

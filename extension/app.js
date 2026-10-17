@@ -269,11 +269,27 @@ if ($('setup')) {
     navigator.clipboard?.writeText(SETUP_PROMPT).catch(() => {})
     $('setup-copy').textContent = 'Copied'
     setTimeout(() => { $('setup-copy').textContent = 'Copy' }, 2000)
-    toast('Paste it into your agent in the terminal. This page updates as it works.')
   })
-  $('setup-skip').addEventListener('click', () => { $('setup').hidden = true; act({ type: 'setup-skip' }) })
+  $('setup-skip').addEventListener('click', () => { $('setup').close(); act({ type: 'setup-skip' }) })
+  $('setup-close').addEventListener('click', () => $('setup').close())
+  $('setup').addEventListener('click', (e) => { if (e.target === $('setup')) $('setup').close() }) // click outside the card
+  $('setup').addEventListener('close', () => { setupClosed = true; delete $('setup').dataset.manual })
+  // "agents connected" opens it any time: to set up, or to change what the agents show
+  const openSetup = () => { if ($('setup').open) return; $('setup').dataset.manual = '1'; $('setup').showModal() }
+  $('status')?.addEventListener('click', openSetup)
+  $('status')?.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSetup() } })
 }
-const showSetup = (on) => { if ($('setup')) $('setup').hidden = !on }
+// Pops up by itself until setup is done; once closed, not again on this page.
+let setupClosed = false
+const showSetup = (on) => {
+  const d = $('setup')
+  if (!d) return
+  // after setup, the same popup is for changing things
+  $('setup-title').textContent = on ? 'Let your agent set up this tab' : 'Change what your agents show here'
+  $('setup-skip').hidden = !on
+  if (on && !d.open && !setupClosed) d.showModal()
+  if (!on && d.open && !d.dataset.manual) d.close()
+}
 
 // --- live state ----------------------------------------------------------
 
