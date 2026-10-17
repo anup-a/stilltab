@@ -542,12 +542,13 @@ body[data-photo] .search svg { stroke: rgba(255, 255, 255, 0.8); }
 body[data-photo] .ask { opacity: 0; transform: translateY(-4px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
 body[data-photo] .ask.has-text, body[data-photo] .hero:hover .ask, body[data-photo] .ask:focus-within { opacity: 1; transform: none; }
 
-/* the list keeps its frosted card; rows lift with glass on hover */
+/* the list sits on a solid charcoal card: no glass, no edge */
+body[data-photo][data-look="scene"] .column { background: #36353a; border-color: transparent; backdrop-filter: none; box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55); text-shadow: none; }
 body[data-photo] .group-label { color: rgba(255, 255, 255, 0.72); }
 body[data-photo] .row-meta, body[data-photo] .chev { color: rgba(255, 255, 255, 0.8); }
 body[data-photo] .group[data-section="lately"] .row-title { color: rgba(255, 255, 255, 0.8); }
 body[data-photo] .row:hover, body[data-photo] .row[data-open="true"] {
-  background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(22px) saturate(1.1);
+  background: rgba(255, 255, 255, 0.07);
   text-shadow: none;
 }
 body[data-photo] .row:hover .chev { opacity: 1; }
