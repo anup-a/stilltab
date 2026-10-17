@@ -2,10 +2,20 @@
 import fs from 'node:fs'
 import { PORT, STATE_FILE, duration, event, load, prune, update } from '../lib/state.mjs'
 import { TOPICS, loadNews, newsConfig, refreshNews } from '../lib/news.mjs'
+import { MODULES, ONBOARD, routinePrompt } from '../lib/onboard.mjs'
 
 const HELP = `tab: a calm new tab your agents run
 
+  tab onboard                             setup steps for an agent: ask the user, apply, create the routine
   tab serve [--port 7777]                 start the local server the new tab reads
+  tab autostart on|off                    keep the server running from login (macOS launchd)
+  tab setup done|reset                    hide or bring back the setup card on the new tab
+  tab show <part> on|off                  ${Object.keys(MODULES).join(', ')}
+  tab weather <city> [--unit c|f] | off   weather next to the time (Open-Meteo, no key)
+  tab routine                             the scheduled refresh: status
+  tab routine set --every 2h [--hours 8-22] [--agent claude|codex|gemini|opencode | --cmd '…'] [--brief "…"] [--external]
+  tab routine prompt                      what each run follows (agents with their own scheduler run this)
+  tab routine run | off | done            run now, remove, or record a finished run
   tab brief "text" | --clear              one calm line under the greeting
   tab theme sky|scene|photo               soft gradient sky, a blurred landscape, or a sharp photo, per time of day
   tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
@@ -111,6 +121,34 @@ async function run() {
       return ok()
     case 'demo':
       return demo()
+    case 'onboard':
+      return process.stdout.write(ONBOARD)
+    case 'setup': {
+      const sub = need(pos[0], 'done or reset')
+      update((s) => { s.setup = sub === 'done' ? { done: true, at: now() } : null })
+      return ok()
+    }
+    case 'show': {
+      const part = need(pos[0], `part (${Object.keys(MODULES).join(', ')})`)
+      if (!(part in MODULES)) throw new Error(`Unknown part "${part}". Pick from: ${Object.keys(MODULES).join(', ')}`)
+      const on = (pos[1] ?? 'on') !== 'off'
+      update((s) => { s.show = { ...(s.show || {}), [part]: on } })
+      return ok()
+    }
+    case 'weather': {
+      const place = need(pos.join(' '), 'city, or off')
+      if (place === 'off') { update((s) => { s.weather = null; s.show = { ...(s.show || {}), weather: false } }); return ok() }
+      const { geocode } = await import('../lib/weather.mjs')
+      const g = await geocode(place)
+      update((s) => { s.weather = { ...g, unit: flags.unit === 'f' ? 'f' : 'c' }; s.show = { ...(s.show || {}), weather: true } })
+      return ok(`${g.name}${g.country ? `, ${g.country}` : ''}`)
+    }
+    case 'autostart': {
+      const { autostart } = await import('../lib/routine.mjs')
+      return console.log(autostart(need(pos[0], 'on or off') === 'on'))
+    }
+    case 'routine':
+      return routine(pos)
     case undefined: case 'help': case '--help': case '-h':
       return process.stdout.write(HELP)
     default:
@@ -184,6 +222,39 @@ async function news([sub, ...args]) {
   }
 }
 
+async function routine([sub]) {
+  const r = await import('../lib/routine.mjs')
+  const cur = load().routine || {}
+  switch (sub) {
+    case undefined:
+      return print({ ...cur, installed: r.installed('routine'), command: cur.every && !cur.external ? r.routineCommand(cur) : null })
+    case 'prompt':
+      return process.stdout.write(routinePrompt(cur))
+    case 'set': {
+      const next = { ...cur }
+      for (const k of ['every', 'hours', 'agent', 'cmd', 'brief']) if (flags[k] !== undefined && flags[k] !== true) next[k] = val(flags[k])
+      if (flags.hours && !/^\d{1,2}-\d{1,2}$/.test(next.hours)) throw new Error('--hours looks like 8-22')
+      next.agent ||= process.env.NIRVANA_AGENT || null
+      next.external = Boolean(flags.external)
+      if (!next.every && !next.external) throw new Error('Say how often: --every 2h (or --external if your own scheduler runs it)')
+      const msg = next.external ? 'Brief saved. Your own scheduler runs `tab routine prompt`.' : r.installRoutine(next)
+      if (next.external) r.removeRoutine()
+      update((s) => { s.routine = { ...next, updatedAt: now() } })
+      return console.log(msg)
+    }
+    case 'off':
+      update((s) => { if (s.routine) s.routine.every = null })
+      return console.log(r.removeRoutine())
+    case 'run':
+      return console.log(r.runRoutineNow(cur) || 'No scheduled routine installed. Follow `tab routine prompt` yourself.')
+    case 'done':
+      update((s) => { s.routine = { ...(s.routine || {}), lastRun: now() } })
+      return ok()
+    default:
+      throw new Error(`Unknown routine command "${sub}"`)
+  }
+}
+
 function demo() {
   update((s) => {
     s.brief = 'Three things finished while you were away. One wants a look.'
@@ -211,7 +282,7 @@ function demo() {
 
 function parse(args) {
   const pos = [], flags = {}
-  const bool = new Set(['clear', 'json', 'reset'])
+  const bool = new Set(['clear', 'json', 'reset', 'external'])
   for (let i = 0; i < args.length; i++) {
     const a = args[i]
     if (a.startsWith('--')) {

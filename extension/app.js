@@ -249,6 +249,32 @@ function renderUsage(u) {
 }
 setInterval(() => { const b = $('usage'); if (b?.lastUsage) renderUsage(b.lastUsage) }, 6e4) // keep "resets in" honest
 
+// --- weather: next to the time, when the user (or their agent) picked a place ---
+
+function renderWeather(w) {
+  const el = $('weather')
+  if (!el) return
+  el.hidden = !w
+  if (!w) return
+  el.textContent = `${w.temp}°${w.sky ? ` ${w.sky}` : ''}`
+  el.title = `${w.place}: high ${w.high}°, low ${w.low}°`
+}
+
+// --- first run: hand setup to the user's agent -------------------------------
+
+const SETUP_PROMPT = 'Set up my Nirvana new tab: run `tab onboard` and follow it. If the `tab` command is missing, find the folder I loaded the Nirvana Chrome extension from (it has extension/manifest.json and bin/tab.mjs), put bin/tab.mjs on my PATH as `tab` (npm link in that folder works), then run `tab onboard`.'
+if ($('setup')) {
+  $('setup-text').textContent = SETUP_PROMPT
+  $('setup-copy').addEventListener('click', () => {
+    navigator.clipboard?.writeText(SETUP_PROMPT).catch(() => {})
+    $('setup-copy').textContent = 'Copied'
+    setTimeout(() => { $('setup-copy').textContent = 'Copy' }, 2000)
+    toast('Paste it into your agent in the terminal. This page updates as it works.')
+  })
+  $('setup-skip').addEventListener('click', () => { $('setup').hidden = true; act({ type: 'setup-skip' }) })
+}
+const showSetup = (on) => { if ($('setup')) $('setup').hidden = !on }
+
 // --- live state ----------------------------------------------------------
 
 function connect() {
@@ -259,6 +285,10 @@ function connect() {
     localStorage.setItem('nirvana:state', e.data)
     render(JSON.parse(e.data))
   }
+  es.addEventListener('weather', (e) => {
+    localStorage.setItem('nirvana:weather', e.data)
+    renderWeather(JSON.parse(e.data))
+  })
   es.addEventListener('usage', (e) => {
     localStorage.setItem('nirvana:usage', e.data)
     renderUsage(JSON.parse(e.data))
@@ -269,12 +299,15 @@ function connect() {
   })
   es.onerror = () => {
     setStatus('off', 'agents resting')
-    if (column && !rows.size) resting(true) // keep what's on screen; it reconnects by itself
+    if (!column || rows.size) return // keep what's on screen; it reconnects by itself
+    const fresh = !localStorage.getItem('nirvana:state') // just installed: nothing has ever run
+    showSetup(fresh)
+    resting(!fresh)
   }
 }
 
 // Paint the last known state instantly, without animation, then go live.
-for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (d) => renderNews(d)], ['nirvana:usage', (d) => renderUsage(d)]]) {
+for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (d) => renderNews(d)], ['nirvana:usage', (d) => renderUsage(d)], ['nirvana:weather', (d) => renderWeather(d)]]) {
   try { const d = JSON.parse(localStorage.getItem(key)); if (d) fn(d) } catch {}
 }
 connect()
@@ -311,6 +344,9 @@ function render(state) {
   // "photo" is the scene look with the full photograph; the side panel keeps the frosted thumbnail
   document.body.toggleAttribute('data-photo', state.look === 'photo' && PAGE === 'newtab')
   if (!column) return
+  // which parts of the page the user wants (tab show <part> on|off)
+  for (const part of ['usage', 'weather', 'ask', 'reading', 'hint']) document.body.classList.toggle(`hide-${part}`, state.show?.[part] === false)
+  showSetup(!state.setup?.done)
   renderAsk(Array.isArray(state.ai) && state.ai.length ? state.ai : DEFAULT_AIS)
   const brief = $('brief')
   if (brief.textContent !== (state.brief || '')) {

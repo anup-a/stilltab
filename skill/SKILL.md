@@ -30,6 +30,10 @@ tab notice "Deploy is waiting for approval" --level warn
 tab unpin ci --after 2h
 tab layout review ci note
 tab theme photo  # or scene, or sky: the look of the page (the user may have picked one; ask before changing)
+tab show weather off   # parts of the page: usage, weather, ask, reading, hint
+tab weather "Dubai"    # or: tab weather off
+tab routine            # the scheduled refresh; tab routine set --every 4h to change how often
+tab onboard            # full setup with the user (first run, or "set up my tab again")
 tab read        # what is on screen now
 tab events      # what the user did
 ```

@@ -17,7 +17,7 @@
 
   <main>
     <header class="hero">
-      <div class="time" id="time"></div>
+      <div class="time"><span id="time"></span><span class="weather" id="weather" hidden></span></div>
       <h1 class="greet" id="greet"></h1>
       <p class="brief" id="brief" hidden></p>
       <form class="search" id="search" role="search">
@@ -34,6 +34,16 @@
         <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg>
       </button>
     </div>
+
+    <section class="setup" id="setup" aria-labelledby="setup-title" hidden>
+      <h2 class="setup-title" id="setup-title">Let your agent set up this tab</h2>
+      <p class="setup-sub">Paste this into Claude Code, Codex or any agent in your terminal. It asks what you want to see here and how often to refresh, then sets it up and keeps it current.</p>
+      <div class="setup-prompt">
+        <p id="setup-text"></p>
+        <button class="setup-copy" id="setup-copy" type="button">Copy</button>
+      </div>
+      <button class="setup-skip" id="setup-skip" type="button">I'll do it myself</button>
+    </section>
 
     <div class="column" id="column" aria-live="polite"></div>
 
