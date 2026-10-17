@@ -15,7 +15,9 @@ const HELP = `tab: a new tab your agents run
         --items '[{"text":"…","url":"…"}]' checklist the user can tick
         --link https://… [--caption C]    a single link card
       options:
-        --title T  --size s|m|l  --ttl 2h  --tone calm|warm|cool|alert  --source agent-name
+        --title T  --section needs|soon|lately  --ttl 2h  --source agent-name
+      each widget shows as one line; lists, notes and details expand on click.
+      default section: list → needs, stat/link → soon, everything else → lately
   tab set <id> --data '{"value":"94%"}'   merge fields into a widget (live update)
   tab unpin <id> [--after 2h]             remove now or later
   tab notice "text" [--level info|done|warn] [--ttl 1h] | --clear
@@ -98,6 +100,7 @@ function widgetFromFlags(id) {
   const base = {
     id,
     title: flags.title ?? null,
+    section: flags.section ?? null,
     size: flags.size || 'm',
     tone: flags.tone || 'calm',
     source: flags.source || process.env.NIRVANA_AGENT || null,

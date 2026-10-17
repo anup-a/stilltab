@@ -2,8 +2,9 @@
 
 const API = location.protocol.startsWith('http') ? '' : 'http://127.0.0.1:7777'
 const $ = (id) => document.getElementById(id)
-const grid = $('grid')
-const cards = new Map() // id -> { el, key }
+const column = $('column')
+const rows = new Map() // id -> { el, sig }
+const openIds = new Set()
 let firstPaint = true
 
 // --- sky + greeting ------------------------------------------------------
@@ -62,9 +63,21 @@ function setStatus(state, text) {
 function resting(on, empty = false) {
   $('resting').hidden = !on
   $('resting-sub').innerHTML = empty
-    ? 'Nothing needs you. Agents can pin things here with <code>tab pin</code>.'
+    ? 'Nothing needs you. Agents can add things here with <code>tab pin</code>.'
     : 'Run <code>tab serve</code> to let them in.'
-  if (on && !empty) { grid.replaceChildren(); cards.clear() }
+  if (on && !empty) { column.replaceChildren(); rows.clear() }
+}
+
+// Every widget becomes one quiet line, grouped by what it asks of you.
+const SECTIONS = [
+  ['needs', 'Needs you'],
+  ['soon', 'Coming up'],
+  ['lately', 'Lately'],
+]
+const DEFAULT_SECTION = { list: 'needs', stat: 'soon', link: 'soon' }
+const sectionOf = (w) => {
+  const s = w.section === 'done' ? 'lately' : w.section
+  return SECTIONS.some(([k]) => k === s) ? s : DEFAULT_SECTION[w.kind] || 'lately'
 }
 
 function render(state) {
@@ -83,25 +96,33 @@ function render(state) {
   }
 
   const ids = state.order.filter((id) => state.widgets[id])
-  for (const [id, c] of cards) {
-    if (!state.widgets[id]) { leave(c.el); cards.delete(id) }
+  for (const [id, r] of rows) if (!state.widgets[id]) { leave(r.el); rows.delete(id) }
+
+  let i = 0
+  for (const [key, label] of SECTIONS) {
+    const members = ids.filter((id) => sectionOf(state.widgets[id]) === key)
+    let sec = column.querySelector(`[data-section="${key}"]`)
+    if (!members.length) { sec?.remove(); continue }
+    if (!sec) {
+      sec = h('section', { class: 'group', 'data-section': key }, h('h2', { class: 'group-label' }, label), h('div', { class: 'group-rows' }))
+    }
+    column.append(sec) // keeps sections in a fixed order
+    const box = sec.querySelector('.group-rows')
+    members.forEach((id) => {
+      const w = state.widgets[id]
+      const sig = JSON.stringify(w)
+      const have = rows.get(id)
+      let el = have?.el
+      if (have?.sig !== sig) {
+        el = row(w)
+        el.style.setProperty('--i', firstPaint ? i : 0)
+        if (have) { el.style.animation = 'none'; have.el.replaceWith(el) }
+        rows.set(id, { el, sig })
+      }
+      if (el.parentNode !== box || box.children[members.indexOf(id)] !== el) box.append(el)
+      i++
+    })
   }
-  ids.forEach((id, i) => {
-    const w = state.widgets[id]
-    const key = JSON.stringify(w)
-    const have = cards.get(id)
-    if (have?.key === key) return
-    const el = card(w)
-    el.style.setProperty('--i', firstPaint ? i : 0)
-    if (have) {
-      el.style.animation = 'none' // updates swap quietly, no re-entrance
-      have.el.replaceWith(el)
-    } else grid.append(el)
-    cards.set(id, { el, key })
-  })
-  // Reorder only when needed: moving an iframe reloads it.
-  const current = [...grid.children].filter((n) => !n.classList.contains('leaving')).map((n) => n.dataset.id)
-  if (current.join() !== ids.join()) ids.forEach((id) => grid.append(cards.get(id).el))
 
   resting(ids.length === 0 && !state.notice, true)
   firstPaint = false
@@ -113,39 +134,78 @@ function leave(el) {
   setTimeout(() => el.remove(), 600)
 }
 
-// --- widgets -------------------------------------------------------------
+// --- rows ----------------------------------------------------------------
 
-function card(w) {
-  const el = h('article', { class: 'card', 'data-id': w.id, 'data-size': w.size || 'm', 'data-tone': w.tone || 'calm', 'data-kind': w.kind })
-  const head = h('div', { class: 'card-head' },
-    h('span', { class: 'tone' }),
-    h('span', { class: 'card-title' }, w.title || ''),
-    w.source ? h('span', { class: 'card-src' }, w.source) : null,
-    closeButton(() => act({ type: 'dismiss', id: w.id })),
-  )
-  el.append(head, body(w))
+function row(w) {
+  const el = h('div', { class: 'row', 'data-id': w.id, 'data-kind': w.kind })
+  const title = w.title || firstLine(w) || w.id
+  const meta = metaFor(w)
+  const more = details(w)
+
+  const main = w.kind === 'link'
+    ? h('a', { class: 'row-main', href: safeUrl(w.url) })
+    : h('button', { class: 'row-main', type: 'button', 'aria-expanded': 'false' })
+  main.append(...[
+    h('span', { class: 'row-title' }, title),
+    meta ? h('span', { class: 'row-meta' }, meta) : null,
+    more ? chevron() : null,
+  ].filter(Boolean))
+  if (w.kind === 'link') main.addEventListener('click', () => act({ type: 'open', id: w.id, value: w.url }))
+  el.append(main, closeButton(() => act({ type: 'dismiss', id: w.id })))
+
+  if (more) {
+    const wrap = h('div', { class: 'row-more' }, h('div', { class: 'row-more-inner' }))
+    el.append(wrap)
+    const toggle = (open) => {
+      el.dataset.open = open ? 'true' : ''
+      main.setAttribute('aria-expanded', String(open))
+      if (open && !wrap.firstChild.childElementCount) wrap.firstChild.append(more()) // build lazily
+      open ? openIds.add(w.id) : openIds.delete(w.id)
+    }
+    main.addEventListener('click', () => toggle(!el.dataset.open))
+    if (openIds.has(w.id)) toggle(true)
+  }
   return el
 }
 
-function body(w) {
+function metaFor(w) {
   switch (w.kind) {
-    case 'md': return mdBlock(w.md)
-    case 'text': return h('div', { class: 'md' }, ...String(w.text).split(/\n{2,}/).map((p) => h('p', {}, p)))
-    case 'stat': return h('div', {},
-      h('div', { class: 'stat-value' }, w.value),
-      (w.label || w.trend) ? h('div', { class: 'stat-row' },
-        w.label ? h('span', {}, w.label) : null,
-        w.trend ? h('span', { class: 'trend', 'data-trend': w.trend }, { up: '↑', down: '↓', flat: '→' }[w.trend] || w.trend) : null) : null,
-      w.caption ? h('div', { class: 'caption' }, w.caption) : null)
-    case 'list': return h('ul', { class: 'list' }, ...(w.items || []).map((it, i) => listItem(w, it, i)))
-    case 'link': {
-      const a = h('a', { class: 'link', href: safeUrl(w.url) }, h('div', { class: 'link-host' }, host(w.url)), w.caption ? h('div', { class: 'caption' }, w.caption) : null)
-      a.addEventListener('click', () => act({ type: 'open', id: w.id, value: w.url }))
-      return a
+    case 'stat': return w.value
+    case 'list': {
+      const items = w.items || []
+      const open = items.filter((x) => !x.done).length
+      return open ? `${open} open` : 'all done'
     }
-    case 'html': return frame(w)
-    default: return h('div', { class: 'caption' }, `Unknown widget kind "${w.kind}"`)
+    case 'link': return w.title ? host(w.url) : null
+    default: return null
   }
+}
+
+// Returns a builder for the expanded part, or null when there is nothing more to show.
+function details(w) {
+  switch (w.kind) {
+    case 'stat': {
+      const parts = [w.label, w.caption].filter(Boolean)
+      return parts.length ? () => h('p', { class: 'detail' }, parts.join(' · ')) : null
+    }
+    case 'list': return () => h('ul', { class: 'list' }, ...(w.items || []).map((it, i) => listItem(w, it, i)))
+    case 'md': return () => mdBlock(w.md)
+    case 'text': return () => h('div', { class: 'md' }, ...String(w.text).split(/\n{2,}/).map((p) => h('p', {}, p)))
+    case 'html': return () => frame(w)
+    case 'link': return null
+    default: return null
+  }
+}
+
+function firstLine(w) {
+  const src = w.kind === 'md' ? w.md : w.kind === 'text' ? w.text : ''
+  return String(src || '').split('\n').find((l) => l.trim())?.replace(/^[#>*\-\d.\s]+/, '').slice(0, 80)
+}
+
+function chevron() {
+  const s = h('span', { class: 'chev', 'aria-hidden': 'true' })
+  s.innerHTML = '<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>'
+  return s
 }
 
 function listItem(w, it, i) {
@@ -167,15 +227,12 @@ function listItem(w, it, i) {
 }
 
 function frame(w) {
-  const theme = document.body.dataset.theme
-  const f = h('iframe', {
+  return h('iframe', {
     class: 'frame',
-    src: `${API}/w/${encodeURIComponent(w.id)}?theme=${theme}&v=${encodeURIComponent(w.updatedAt || '')}`,
+    src: `${API}/w/${encodeURIComponent(w.id)}?theme=${document.body.dataset.theme}&v=${encodeURIComponent(w.updatedAt || '')}`,
     sandbox: 'allow-scripts allow-popups allow-popups-to-escape-sandbox',
-    loading: 'lazy',
     title: w.title || w.id,
   })
-  return f
 }
 
 addEventListener('message', (e) => {

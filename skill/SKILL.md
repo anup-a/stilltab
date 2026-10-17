@@ -5,10 +5,13 @@ description: Put things on the user's new tab with the `tab` CLI — what finish
 
 # The user's new tab is yours to keep tidy
 
-Every time the user opens a browser tab they see a calm page: greeting, one-line brief, search, then widgets you control. Treat it as a quiet shared desk, not a notification channel.
+Every time the user opens a browser tab they see a calm page: greeting, one-line brief, search, then one quiet column of lines you control, grouped as **Needs you**, **Coming up** and **Lately**. Each widget is a single line (title + short meta like `20 days` or `5 open`); lists, notes and details expand on click. Treat it as a quiet shared desk, not a notification channel.
 
 ## Rules
-- Calm over complete. Show at most ~6 widgets. Remove what is no longer true.
+- Calm over complete. Show at most ~6 lines. Remove what is no longer true.
+- One line per topic: merge related things (a trip's countdown and its to-dos are one list titled "Parents land in 20 days").
+- Titles are short and read on their own. Put the number in `--stat`, the detail in `--label`/`--caption`.
+- Pick `--section`: `needs` (waiting on the user), `soon` (dates, countdowns), `lately` (finished, FYI).
 - One brief line, written to the user, under 90 characters.
 - Use `notice` only for something waiting on the user. Clear it when resolved.
 - Give temporary things a `--ttl` so they leave on their own.
@@ -29,5 +32,4 @@ tab layout review ci note
 tab read        # what is on screen now
 tab events      # what the user did
 ```
-Sizes: `s`, `m` (default), `l` (two columns). Tones: `calm`, `warm`, `cool`, `alert`.
 HTML widgets run sandboxed in their own origin; they can run scripts but cannot reach the page, cookies, or other tabs. Keep them light and transparent-backgrounded.
