@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="newtab.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+    <div class="grain"></div>
+  </div>
+
+  <main>
+    <header class="hero">
+      <div class="time" id="time"></div>
+      <h1 class="greet" id="greet"></h1>
+      <p class="brief" id="brief" hidden></p>
+      <form class="search" id="search" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+        <input id="q" name="q" type="search" placeholder="Search the web" autocomplete="off" spellcheck="false" autofocus>
+      </form>
+    </header>
+
+    <div class="notice" id="notice" hidden>
+      <span class="dot"></span>
+      <span class="notice-text" id="notice-text"></span>
+      <button class="x" id="notice-x" aria-label="Dismiss">
+        <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg>
+      </button>
+    </div>
+
+    <section class="grid" id="grid" aria-live="polite"></section>
+
+    <div class="resting" id="resting" hidden>
+      <p class="resting-title">Your agents are resting.</p>
+      <p class="resting-sub" id="resting-sub"></p>
+    </div>
+  </main>
+
+  <footer class="status" id="status"><span class="pulse"></span><span id="status-text">connecting</span></footer>
+
+  <script src="newtab.js"></script>
+</body>
+</html>

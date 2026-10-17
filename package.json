@@ -1,0 +1,9 @@
+{
+  "name": "nirvana-tab",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A calm new tab your agents run. POC.",
+  "type": "module",
+  "bin": { "tab": "bin/tab.mjs" },
+  "engines": { "node": ">=20" }
+}
