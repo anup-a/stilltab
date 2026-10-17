@@ -1,16 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Nirvana (POC)",
-  "description": "A calm sidebar your agents run.",
-  "version": "0.0.2",
+  "description": "A calm new tab your agents run, plus a reading sidebar.",
+  "version": "0.0.3",
   "minimum_chrome_version": "116",
-  "action": { "default_title": "Toggle Nirvana" },
-  "side_panel": { "default_path": "panel.html" },
+  "action": { "default_title": "Toggle today's reading" },
+  "chrome_url_overrides": { "newtab": "newtab.html" },
+  "side_panel": { "default_path": "feed.html" },
   "background": { "service_worker": "background.js" },
   "commands": {
     "_execute_action": {
       "suggested_key": { "default": "Alt+Shift+N", "mac": "Alt+Shift+N" },
-      "description": "Toggle the Nirvana sidebar"
+      "description": "Toggle today's reading"
     }
   },
   "permissions": ["sidePanel", "search"],

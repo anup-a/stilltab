@@ -263,7 +263,7 @@ main {
   display: inline-flex; align-items: center; gap: 6px;
   margin-right: 0; padding: 4px 10px; border: 0; border-radius: 999px;
   background: transparent; cursor: pointer;
-  font-size: 12px; color: var(--ink-3);
+  font-size: 12px; color: var(--ink-3); white-space: nowrap;
   transition: background 250ms var(--ease), color 250ms var(--ease);
 }
 .news-edit:hover, .news[data-editing="true"] .news-edit { background: color-mix(in srgb, var(--card) 70%, transparent); color: var(--ink-2); }
@@ -305,6 +305,18 @@ main {
 .news-more { padding: 0; border: 0; background: none; cursor: pointer; font-size: 13px; color: var(--ink-2); }
 .news-more:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--ink-3); }
 .news-when { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+
+/* --- side panel: today's reading only -------------------------------- */
+
+.feed-main { max-width: 560px; padding: 30px 14px 40px; }
+body[data-page="feed"] .news { margin-top: 0; }
+.feed-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 0 10px 14px; }
+.feed-title { margin: 0; font: 400 26px/1.1 var(--serif); letter-spacing: -0.02em; white-space: nowrap; }
+.feed-date { margin: 6px 0 0; font-size: 13px; color: var(--ink-3); }
+.feed-head .news-edit { margin-top: 4px; }
+body[data-page="feed"] .news-topics { padding-left: 10px; padding-right: 10px; }
+body[data-page="feed"] .news-hint { margin-left: 10px; }
+body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 
 /* --- resting + status ------------------------------------------------- */
 

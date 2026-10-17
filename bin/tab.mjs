@@ -3,9 +3,9 @@ import fs from 'node:fs'
 import { PORT, STATE_FILE, duration, event, load, prune, update } from '../lib/state.mjs'
 import { TOPICS, loadNews, newsConfig, refreshNews } from '../lib/news.mjs'
 
-const HELP = `tab: a calm sidebar your agents run
+const HELP = `tab: a calm new tab your agents run
 
-  tab serve [--port 7777]                 start the local server the sidebar reads
+  tab serve [--port 7777]                 start the local server the new tab reads
   tab brief "text" | --clear              one calm line under the greeting
   tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
                                           AI shortcuts under search (%s = typed question)

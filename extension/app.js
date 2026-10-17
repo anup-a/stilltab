@@ -1,18 +1,22 @@
-// Nirvana new tab: renders whatever the agents put in state, live.
+// Nirvana: one script for both pages. Each part runs only if its elements are on the page.
+//   newtab.html: greeting, search, AI shortcuts, the agents' quiet column
+//   feed.html:   the side panel, today's reading only
 
+const PAGE = document.body.dataset.page
+const IS_PANEL = PAGE === 'feed'
 const IN_EXTENSION = location.protocol === 'chrome-extension:'
 const API = IN_EXTENSION ? 'http://127.0.0.1:7777' : ''
 
 // In the side panel a plain link would navigate the panel itself. Open it in a tab instead.
 document.addEventListener('click', (e) => {
   const a = e.target.closest?.('a[href]')
-  if (!a || !IN_EXTENSION || !/^https?:/.test(a.href)) return
+  if (!a || !IS_PANEL || !IN_EXTENSION || !/^https?:/.test(a.href)) return
   e.preventDefault()
   chrome.tabs.create({ url: a.href, active: !(e.metaKey || e.ctrlKey) })
 })
 
 // Tell the background worker we're open, so the toolbar button can close us.
-if (IN_EXTENSION && chrome.runtime?.connect) {
+if (IS_PANEL && IN_EXTENSION && chrome.runtime?.connect) {
   const link = () => {
     const port = chrome.runtime.connect({ name: 'panel' })
     chrome.windows.getCurrent((w) => port.postMessage({ windowId: w.id }))
@@ -42,6 +46,8 @@ function tick() {
   const p = phase(h)
   document.body.dataset.phase = p === 'night' ? 'dusk' : p
   document.body.dataset.theme = p === 'night' || dark.matches ? 'dark' : 'light'
+  if ($('feed-date')) $('feed-date').textContent = d.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })
+  if (!$('greet')) return
   $('time').textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
   $('greet').textContent = h < 5 ? 'Still up' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Good night'
 }
@@ -51,11 +57,11 @@ dark.addEventListener('change', tick)
 
 // --- search: always the user's own search engine -------------------------
 
-$('search').addEventListener('submit', (e) => {
+$('search')?.addEventListener('submit', (e) => {
   e.preventDefault()
   const text = $('q').value.trim()
   if (!text) return
-  if (IN_EXTENSION) chrome.search.query({ text, disposition: 'NEW_TAB' })
+  if (IN_EXTENSION) chrome.search.query({ text, disposition: 'CURRENT_TAB' })
   else location.href = `https://www.google.com/search?q=${encodeURIComponent(text)}`
   $('q').value = ''
   syncAsk()
@@ -75,6 +81,7 @@ const DEFAULT_AIS = [
 let ais = []
 
 function renderAsk(list) {
+  if (!$('ask')) return
   const sig = JSON.stringify(list)
   if (sig === JSON.stringify(ais)) return
   ais = list
@@ -105,7 +112,7 @@ function syncAsk() {
   }
   $('ask').classList.toggle('has-text', Boolean(text))
 }
-$('q').addEventListener('input', syncAsk)
+$('q')?.addEventListener('input', syncAsk)
 renderAsk(DEFAULT_AIS)
 
 let toastTimer
@@ -123,6 +130,7 @@ function connect() {
   const es = new EventSource(`${API}/api/events`)
   es.onmessage = (e) => {
     setStatus('live', 'agents connected')
+    if (!column) return
     localStorage.setItem('nirvana:state', e.data)
     render(JSON.parse(e.data))
   }
@@ -132,7 +140,7 @@ function connect() {
   })
   es.onerror = () => {
     setStatus('off', 'agents resting')
-    if (!rows.size) resting(true) // keep what's on screen; it reconnects by itself
+    if (column && !rows.size) resting(true) // keep what's on screen; it reconnects by itself
   }
 }
 
@@ -143,11 +151,13 @@ for (const [key, fn] of [['nirvana:state', (d) => render(d)], ['nirvana:news', (
 connect()
 
 function setStatus(state, text) {
+  if (!$('status')) return
   $('status').dataset.state = state
   $('status-text').textContent = text
 }
 
 function resting(on, empty = false) {
+  if (!$('resting')) return
   $('resting').hidden = !on
   $('resting-sub').innerHTML = empty
     ? 'Nothing needs you. Agents can add things here with <code>tab pin</code>.'
@@ -168,6 +178,7 @@ const sectionOf = (w) => {
 }
 
 function render(state) {
+  if (!column) return
   renderAsk(Array.isArray(state.ai) && state.ai.length ? state.ai : DEFAULT_AIS)
   const brief = $('brief')
   if (brief.textContent !== (state.brief || '')) {
@@ -338,13 +349,14 @@ addEventListener('message', (e) => {
 
 const TOPIC_NAMES = { tech: 'Tech', ai: 'AI', science: 'Science', design: 'Design', business: 'Business', world: 'World', sports: 'Sports' }
 const topicName = (t) => TOPIC_NAMES[t] || t[0].toUpperCase() + t.slice(1)
-const SHOWN = 5
+const SHOWN = IS_PANEL ? Infinity : 5 // the panel is all reading; no need to fold
 let newsSig = ''
 let newsExpanded = false
 let news = null
 let seenStories = null // urls already shown; null until first paint
 
 function renderNews(n) {
+  if (!$('news')) return
   const sig = JSON.stringify(n)
   if (sig === newsSig) return
   newsSig = sig
@@ -353,7 +365,8 @@ function renderNews(n) {
   box.hidden = !n.enabled
   if (!n.enabled) return
 
-  const label = [...n.topics.map(topicName), ...(n.feeds.length ? [`${n.feeds.length} feed${n.feeds.length > 1 ? 's' : ''}`] : [])].join(' · ') || 'Pick topics'
+  const parts = [...n.topics.map(topicName), ...(n.feeds.length ? [`${n.feeds.length} feed${n.feeds.length > 1 ? 's' : ''}`] : [])]
+  const label = !parts.length ? 'Pick topics' : parts.length <= 2 ? parts.join(' · ') : `${parts.length} topics`
   $('news-edit').replaceChildren(h('span', {}, label), chevron())
 
   $('news-topics').replaceChildren(...n.topicsAvailable.map((t) => {
@@ -390,13 +403,13 @@ function renderNews(n) {
   $('news-when').textContent = n.refreshing ? 'Refreshing…' : n.fetchedAt ? `Updated ${when(n.fetchedAt)}` : ''
 }
 
-$('news-edit').addEventListener('click', () => {
+$('news-edit')?.addEventListener('click', () => {
   const box = $('news')
   const open = box.dataset.editing !== 'true'
   box.dataset.editing = String(open)
   $('news-edit').setAttribute('aria-expanded', String(open))
 })
-$('news-more').addEventListener('click', () => {
+$('news-more')?.addEventListener('click', () => {
   newsExpanded = !newsExpanded
   newsSig = ''
   if (news) renderNews(news)
@@ -419,7 +432,7 @@ function act(body) {
   fetch(`${API}/api/action`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).catch(() => {})
 }
 
-$('notice-x').addEventListener('click', () => {
+$('notice-x')?.addEventListener('click', () => {
   $('notice').hidden = true
   act({ type: 'notice-dismiss' })
 })
