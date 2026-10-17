@@ -65,6 +65,7 @@ if (readingBtn && IN_EXTENSION && chrome.sidePanel) {
 }
 // Inside the web drawer: pass Escape and ⌥⇧N up to the new tab.
 if (IS_PANEL && window.parent !== window) {
+  document.documentElement.classList.add('in-frame')
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' || (e.altKey && e.shiftKey && e.code === 'KeyN')) {
       e.preventDefault()
