@@ -7,6 +7,7 @@ const HELP = `tab: a calm new tab your agents run
 
   tab serve [--port 7777]                 start the local server the new tab reads
   tab brief "text" | --clear              one calm line under the greeting
+  tab theme sky|scene                     soft gradient sky, or a blurred landscape per time of day
   tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
                                           AI shortcuts under search (%s = typed question)
   tab news                                today's headlines as JSON
@@ -49,6 +50,12 @@ async function run() {
     case 'brief':
       update((s) => { s.brief = flags.clear ? null : need(pos[0], 'brief text') })
       return ok()
+    case 'theme': {
+      const look = need(pos[0], 'sky or scene')
+      if (!['sky', 'scene'].includes(look)) throw new Error('Theme is sky or scene')
+      update((s) => { s.look = look === 'sky' ? undefined : look })
+      return ok()
+    }
     case 'ai': {
       const list = flags.reset ? null : JSON.parse(need(pos[0], 'AI list JSON'))
       if (list && !list.every((a) => a.name && /^https:\/\//.test(a.url))) throw new Error('Each AI needs a name and an https url')

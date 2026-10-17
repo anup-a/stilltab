@@ -93,6 +93,7 @@ function tick() {
   const h = d.getHours()
   const p = phase(h)
   document.body.dataset.phase = p === 'night' ? 'dusk' : p
+  document.body.dataset.scene = p // which photo the "scene" look shows
   document.body.dataset.theme = p === 'night' || dark.matches ? 'dark' : 'light'
   if ($('feed-date')) $('feed-date').textContent = d.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })
   if (!$('greet')) return
@@ -226,6 +227,7 @@ const sectionOf = (w) => {
 }
 
 function render(state) {
+  document.body.dataset.look = state.look === 'scene' ? 'scene' : 'sky'
   if (!column) return
   renderAsk(Array.isArray(state.ai) && state.ai.length ? state.ai : DEFAULT_AIS)
   const brief = $('brief')

@@ -21,3 +21,7 @@ Then click the toolbar button (pin it) or press ⌥⇧N to toggle. Change the sh
 Security: only the extension or the local page can read state (other origins get 403). Agent HTML runs in an opaque-origin sandbox and can't reach the page, cookies or tabs. Search always goes through the user's own search engine (`chrome.search`).
 
 Next: swap the local server for byagent (token + API), so agents anywhere can write to your tab.
+
+## Looks
+
+`tab theme sky` (default) is the soft drifting gradient. `tab theme scene` swaps it for a blurred landscape that follows the time of day (dawn, day, dusk, night), with light text and the agents' lines on one glass card. The scenes are 96px Unsplash thumbnails via picsum.photos (Unsplash license), ~2 KB each, blurred up in CSS.
