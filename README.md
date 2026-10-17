@@ -22,7 +22,8 @@ You need Node 20+ and Chrome (or any browser, as a plain page).
 Prefer to do it by hand? Click "I'll do it myself", then:
 ```
 tab autostart on                                   # or: tab serve &
-tab weather "Dubai"                                # tab show usage|weather|ask|reading|hint on|off
+tab weather "Dubai"                                # tab show usage|weather|ask|sites|reading|hint on|off
+tab show sites on                                  # your most visited sites under the AI shortcuts (or a fixed list: tab sites '[…]')
 tab news topics tech ai
 tab theme photo                                    # sky | scene | photo
 tab routine set --every 2h --hours 8-22 --agent claude --brief "Open PRs, CI on main, my next trip"

@@ -173,6 +173,36 @@ function syncAsk() {
 $('q')?.addEventListener('input', syncAsk)
 renderAsk(DEFAULT_AIS)
 
+// --- frequently visited: the user's list (tab sites), else Chrome's top sites ---
+let sitesSig = ''
+function renderSites(custom, on) {
+  const nav = $('sites')
+  if (!nav) return
+  if (!on) { nav.hidden = true; return }
+  const paint = (list) => {
+    const sig = JSON.stringify(list)
+    if (sig === sitesSig) return
+    sitesSig = sig
+    nav.replaceChildren(...list.map((site) => h('a', { class: 'ai site', href: site.url, title: site.title || site.url },
+      h('img', { src: `https://www.google.com/s2/favicons?domain=${host(site.url)}&sz=64`, alt: '', width: 16, height: 16 }),
+      h('span', {}, site.name))))
+    nav.hidden = !list.length
+  }
+  if (Array.isArray(custom) && custom.length) return paint(custom.slice(0, 8))
+  if (!IN_EXTENSION || !chrome.topSites) return paint([]) // plain web page: only a list set with `tab sites`
+  const skip = new Set(ais.map((a) => host(a.url)))
+  chrome.topSites.get((top) => paint(top
+    .filter((t) => /^https?:/.test(t.url) && !skip.has(host(t.url)))
+    .slice(0, 8)
+    .map((t) => ({ url: t.url, title: t.title, name: siteName(t) }))))
+}
+// "GitHub", not "GitHub · Build and ship software…": the title's first part if short, else the domain.
+function siteName({ url, title }) {
+  const first = (title || '').split(/\s+[-–—|·:]\s+/)[0].trim()
+  if (first && first.length <= 16) return first
+  return host(url).replace(/^www\./, '').split('.').slice(0, -1).join('.') || host(url)
+}
+
 let toastTimer
 // --- "ask your agent": a quiet reminder that this page is theirs to change -------
 // One example a day, bottom right. Clicking copies it to paste into Claude Code, Codex, etc.
@@ -363,6 +393,8 @@ function render(state) {
   // which parts of the page the user wants (tab show <part> on|off)
   for (const part of ['usage', 'weather', 'ask', 'reading', 'hint']) document.body.classList.toggle(`hide-${part}`, state.show?.[part] === false)
   showSetup(!state.setup?.done)
+  document.body.classList.toggle('show-sites', state.show?.sites === true) // off unless asked for
+  renderSites(state.sites, state.show?.sites === true)
   renderAsk(Array.isArray(state.ai) && state.ai.length ? state.ai : DEFAULT_AIS)
   const brief = $('brief')
   if (brief.textContent !== (state.brief || '')) {

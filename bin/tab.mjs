@@ -20,6 +20,8 @@ const HELP = `tab: a calm new tab your agents run
   tab theme sky|scene|photo               soft gradient sky, a blurred landscape, or a sharp photo, per time of day
   tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
                                           AI shortcuts under search (%s = typed question)
+  tab sites '[{"name":"GitHub","url":"https://github.com"}]' | --reset
+                                          sites row under the AIs; --reset = Chrome's most visited (tab show sites on|off)
   tab news                                today's headlines as JSON
   tab news topics tech ai …               pick topics (${Object.keys(TOPICS).join(', ')})
   tab news add <rss-url> [--name N] | remove <rss-url>
@@ -70,6 +72,12 @@ async function run() {
       const list = flags.reset ? null : JSON.parse(need(pos[0], 'AI list JSON'))
       if (list && !list.every((a) => a.name && /^https:\/\//.test(a.url))) throw new Error('Each AI needs a name and an https url')
       update((s) => { s.ai = list })
+      return ok()
+    }
+    case 'sites': {
+      const list = flags.reset ? null : JSON.parse(need(pos[0], 'sites JSON'))
+      if (list && !list.every((x) => x.name && /^https?:\/\//.test(x.url))) throw new Error('Each site needs a name and an http(s) url')
+      update((s) => { s.sites = list; s.show = { ...(s.show || {}), sites: true } })
       return ok()
     }
     case 'news':

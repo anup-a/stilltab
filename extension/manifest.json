@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Nirvana (POC)",
   "description": "A calm new tab your agents run, plus a reading sidebar.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "minimum_chrome_version": "116",
   "action": { "default_title": "Toggle today's reading" },
   "chrome_url_overrides": { "newtab": "newtab.html" },
@@ -14,6 +14,6 @@
       "description": "Toggle today's reading"
     }
   },
-  "permissions": ["sidePanel", "search"],
+  "permissions": ["sidePanel", "search", "topSites"],
   "host_permissions": ["http://127.0.0.1:7777/*"]
 }

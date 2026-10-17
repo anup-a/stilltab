@@ -133,7 +133,9 @@ main {
 
 /* --- ask an AI ------------------------------------------------------ */
 
-.ask { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 16px; max-width: 660px; }
+.ask, .sites { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 16px; max-width: 660px; }
+.sites { margin-top: 8px; }
+.sites[hidden] { display: none; }
 .ai {
   display: inline-flex; align-items: center; gap: 7px;
   height: 30px; padding: 0 12px 0 9px; border-radius: 999px;
@@ -402,7 +404,7 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 .weather::before { content: "·"; margin: 0 0.6em; }
 
 /* parts of the page the user turned off (tab show <part> off) */
-.hide-usage .usage, .hide-weather .weather, .hide-ask .ask, .hide-reading .reading-toggle, .hide-hint .agent-hint { display: none !important; }
+.hide-usage .usage, .hide-weather .weather, .hide-ask .ask, body:not(.show-sites) .sites, .hide-reading .reading-toggle, .hide-hint .agent-hint { display: none !important; }
 
 /* --- plan usage: top left, opposite "Today's reading" --- */
 .usage {
@@ -475,7 +477,7 @@ body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
   .brief { margin-top: 8px; font-size: 14px; }
   .search { margin-top: 20px; height: 44px; padding: 0 16px; }
   .search input { font-size: 14px; }
-  .ask { gap: 6px; margin-top: 12px; }
+  .ask, .sites { gap: 6px; margin-top: 12px; }
   .ai { width: 32px; height: 32px; padding: 0; justify-content: center; }
   .ai span { display: none; } /* icon only; the name is in the tooltip */
   .ai img { filter: none; opacity: 1; }
@@ -574,8 +576,6 @@ body[data-photo] .search input::placeholder { color: rgba(255, 255, 255, 0.72); 
 body[data-photo] .search svg { stroke: rgba(255, 255, 255, 0.8); }
 
 /* AI shortcuts wait until there's something to send, or you reach for them */
-body[data-photo] .ask { opacity: 0; transform: translateY(-4px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
-body[data-photo] .ask.has-text, body[data-photo] .hero:hover .ask, body[data-photo] .ask:focus-within { opacity: 1; transform: none; }
 
 /* the list sits straight on the photo; the setup card is solid, like the matte */
 body[data-look="scene"] .setup { background: #36353a; border-color: rgba(255, 255, 255, 0.08); color: #fff; text-shadow: none; }
