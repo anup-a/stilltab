@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>New Tab</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="app.css">
 </head>
 <body data-page="newtab">
@@ -42,6 +43,12 @@
       <p class="resting-sub" id="resting-sub"></p>
     </div>
   </main>
+
+  <button class="reading-toggle" id="reading-toggle" aria-pressed="false" title="Today's reading (⌥⇧N)">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c2.6-.9 5.3-.6 8 1 2.7-1.6 5.4-1.9 8-1v13c-2.6-.9-5.3-.6-8 1-2.7-1.6-5.4-1.9-8-1z"/><path d="M12 6.5v13"/></svg>
+    <span>Today's reading</span>
+  </button>
+  <aside class="drawer" id="drawer" aria-label="Today's reading" hidden></aside>
 
   <div class="toast" id="toast" role="status" hidden></div>
 

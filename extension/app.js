@@ -8,9 +8,11 @@ const IN_EXTENSION = location.protocol === 'chrome-extension:'
 const API = IN_EXTENSION ? 'http://127.0.0.1:7777' : ''
 
 // In the side panel a plain link would navigate the panel itself. Open it in a tab instead.
+// (In the web drawer the feed sits in an iframe, so links open in a new tab there too.)
 document.addEventListener('click', (e) => {
   const a = e.target.closest?.('a[href]')
-  if (!a || !IS_PANEL || !IN_EXTENSION || !/^https?:/.test(a.href)) return
+  if (!a || !IS_PANEL || !/^https?:/.test(a.href)) return
+  if (!IN_EXTENSION) { a.target = '_blank'; a.rel = 'noopener'; return }
   e.preventDefault()
   chrome.tabs.create({ url: a.href, active: !(e.metaKey || e.ctrlKey) })
 })
@@ -25,6 +27,51 @@ if (IS_PANEL && IN_EXTENSION && chrome.runtime?.connect) {
   link()
 }
 const $ = (id) => document.getElementById(id)
+
+// The "Today's reading" button on the new tab. In Chrome it toggles the side panel;
+// opened as a plain web page (no side panel API) it slides in a drawer instead.
+const readingBtn = $('reading-toggle')
+if (readingBtn && IN_EXTENSION && chrome.sidePanel) {
+  let windowId = null
+  let open = false
+  const show = (v) => { open = v; readingBtn.setAttribute('aria-pressed', String(v)) }
+  chrome.tabs.getCurrent((t) => {
+    windowId = t?.windowId ?? null
+    chrome.runtime.sendMessage({ type: 'panel-open?', windowId }, (r) => show(!!r?.open))
+  })
+  chrome.runtime.onMessage.addListener((m) => { if (m?.type === 'panel' && m.windowId === windowId) show(m.open) })
+  readingBtn.addEventListener('click', () => {
+    if (windowId == null) return
+    if (open && chrome.sidePanel.close) chrome.sidePanel.close({ windowId })
+    else chrome.sidePanel.open({ windowId }) // synchronous: needs this click's user gesture
+  })
+} else if (readingBtn) {
+  const drawer = $('drawer')
+  const toggle = (v = drawer.hidden) => {
+    if (v && !drawer.firstChild) drawer.append(Object.assign(document.createElement('iframe'), { src: 'feed.html', title: "Today's reading" }))
+    drawer.hidden = !v
+    readingBtn.setAttribute('aria-pressed', String(v))
+  }
+  readingBtn.addEventListener('click', () => toggle())
+  const onKey = (e) => {
+    if (e.key === 'Escape' && !drawer.hidden) toggle(false)
+    if (e.altKey && e.shiftKey && e.code === 'KeyN') { e.preventDefault(); toggle() }
+  }
+  document.addEventListener('keydown', onKey)
+  // Keys pressed inside the drawer's iframe arrive as messages.
+  window.addEventListener('message', (e) => {
+    if (e.source === drawer.firstChild?.contentWindow && e.data?.type === 'nirvana-key') onKey({ ...e.data, preventDefault() {} })
+  })
+}
+// Inside the web drawer: pass Escape and ⌥⇧N up to the new tab.
+if (IS_PANEL && window.parent !== window) {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || (e.altKey && e.shiftKey && e.code === 'KeyN')) {
+      e.preventDefault()
+      parent.postMessage({ type: 'nirvana-key', key: e.key, code: e.code, altKey: e.altKey, shiftKey: e.shiftKey }, location.origin)
+    }
+  })
+}
 const column = $('column')
 const rows = new Map() // id -> { el, sig }
 const openIds = new Set()

@@ -1,6 +1,6 @@
 # Nirvana (POC)
 
-A calm new tab your agents run, plus a reading sidebar. Agents write to the new tab with the `tab` CLI. Today's reading lives in Chrome's side panel: toggle it with the toolbar button or ⌥⇧N, and it stays put while you switch tabs. Your clicks (dismiss, tick, open) flow back so agents can tidy it.
+A calm new tab your agents run, plus a reading sidebar. Agents write to the new tab with the `tab` CLI. Today's reading lives in Chrome's side panel: toggle it with the "Today's reading" button on the new tab, the toolbar button, or ⌥⇧N, and it stays put while you switch tabs. Opened as a plain web page (http://127.0.0.1:7777, any browser), the same button slides the reading in as a drawer. Your clicks (dismiss, tick, open) flow back so agents can tidy it.
 
 ```
 tab serve &          # local server on 127.0.0.1:7777 (state in ~/.nirvana)

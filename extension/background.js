@@ -8,9 +8,15 @@ chrome.runtime.onConnect.addListener((port) => {
   if (port.name !== 'panel') return
   let windowId
   port.onMessage.addListener((msg) => {
-    if (msg.windowId) { windowId = msg.windowId; openWindows.add(windowId) }
+    if (msg.windowId) { windowId = msg.windowId; openWindows.add(windowId); tell(windowId, true) }
   })
-  port.onDisconnect.addListener(() => openWindows.delete(windowId))
+  port.onDisconnect.addListener(() => { openWindows.delete(windowId); tell(windowId, false) })
+})
+
+// New tab pages show a "Today's reading" button; keep its pressed state in sync.
+const tell = (windowId, open) => chrome.runtime.sendMessage({ type: 'panel', windowId, open }).catch(() => {})
+chrome.runtime.onMessage.addListener((msg, _sender, reply) => {
+  if (msg?.type === 'panel-open?') reply({ open: openWindows.has(msg.windowId) })
 })
 
 chrome.runtime.onInstalled.addListener(() => {

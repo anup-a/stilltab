@@ -341,6 +341,36 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 @keyframes fall { to { opacity: 0; transform: translateY(6px) scale(0.98); filter: blur(4px); } }
 @keyframes breathe { 50% { opacity: 0.35; } }
 
+/* --- today's reading: button on the new tab, drawer when there's no side panel --- */
+
+.reading-toggle {
+  position: fixed; top: 18px; right: 20px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 32px; padding: 0 13px 0 10px; border-radius: 999px;
+  font: 13px var(--sans); color: var(--ink-2); cursor: pointer;
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
+  backdrop-filter: blur(14px);
+  transition: background 250ms var(--ease), color 250ms var(--ease), box-shadow 250ms var(--ease);
+}
+.reading-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.reading-toggle:hover, .reading-toggle:focus-visible, .reading-toggle[aria-pressed="true"] { color: var(--ink); background: var(--card); box-shadow: var(--card-shadow); outline: none; }
+body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 2; width: 380px;
+  border-left: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
+  box-shadow: -24px 0 60px -30px rgba(40, 30, 70, 0.35);
+  animation: slide-in 450ms var(--ease);
+}
+.drawer iframe { width: 100%; height: 100%; border: 0; display: block; }
+@keyframes slide-in { from { transform: translateX(40px); opacity: 0; } }
+@media (max-width: 680px) {
+  .reading-toggle span { display: none; }
+  .reading-toggle { padding: 0 8px; }
+  .drawer { width: 100%; }
+  body:has(.drawer:not([hidden])) .reading-toggle { right: 20px; }
+}
+
 @media (max-width: 680px) {
   .row > .x { right: 6px; top: 8px; }
   .row:hover .chev { opacity: 0; }
