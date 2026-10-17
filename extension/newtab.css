@@ -257,6 +257,60 @@ main {
 /* html */
 .frame { display: block; width: 100%; height: 150px; border: 0; background: transparent; transition: height 300ms var(--ease); }
 
+/* --- today's reading ------------------------------------------------ */
+
+.news { width: min(100%, 560px); margin: 44px auto 0; animation: rise 800ms var(--ease) both; }
+.news[hidden] { display: none; }
+.news-head { display: flex; align-items: center; justify-content: space-between; }
+.news-head .group-label { margin: 0; }
+.news-edit {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-right: 0; padding: 4px 10px; border: 0; border-radius: 999px;
+  background: transparent; cursor: pointer;
+  font-size: 12px; color: var(--ink-3);
+  transition: background 250ms var(--ease), color 250ms var(--ease);
+}
+.news-edit:hover, .news[data-editing="true"] .news-edit { background: color-mix(in srgb, var(--card) 70%, transparent); color: var(--ink-2); }
+.news-edit .chev { width: 12px; height: 12px; }
+.news[data-editing="true"] .news-edit .chev { transform: rotate(90deg); }
+
+.news-topics-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 420ms var(--ease); }
+.news[data-editing="true"] .news-topics-wrap { grid-template-rows: 1fr; }
+.news-topics-inner { overflow: hidden; min-height: 0; }
+.news-topics { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 14px 4px; }
+.topic {
+  height: 28px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+  font-size: 13px; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--hair);
+  transition: all 250ms var(--ease);
+}
+.topic:hover { color: var(--ink); border-color: var(--ink-3); }
+.topic[aria-pressed="true"] { color: var(--ink); background: var(--card); border-color: var(--card-edge); box-shadow: var(--card-shadow); }
+.news-hint { margin: 6px 14px 10px; font-size: 12px; color: var(--ink-3); }
+.news-hint code { font: 11.5px ui-monospace, Menlo, monospace; padding: 1px 6px; border-radius: 6px; background: var(--hair); }
+
+.news-list { list-style: none; margin: 4px 0 0; padding: 0; }
+.story-row[hidden] { display: none; }
+.story-row { animation: rise 600ms var(--ease) both; animation-delay: calc(var(--i, 0) * 40ms); }
+.story {
+  display: block; padding: 10px 14px; border-radius: 14px; text-decoration: none;
+  transition: background 300ms var(--ease);
+}
+.story:hover, .story:focus-visible { background: color-mix(in srgb, var(--card) 70%, transparent); outline: none; }
+.story-title {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 15px; line-height: 1.4; color: var(--ink);
+}
+.story:visited .story-title { color: var(--ink-2); }
+.story-meta { display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 12.5px; color: var(--ink-3); }
+.story-meta img { width: 14px; height: 14px; border-radius: 3px; filter: saturate(0.5); opacity: 0.8; }
+.news-empty { padding: 10px 14px; font-size: 14px; color: var(--ink-3); }
+
+.news-foot { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px 0; min-height: 28px; }
+.news-more { padding: 0; border: 0; background: none; cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.news-more:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--ink-3); }
+.news-when { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+
 /* --- resting + status ------------------------------------------------- */
 
 .resting { margin-top: 64px; text-align: center; animation: rise 900ms var(--ease) both; }

@@ -14,6 +14,7 @@ tab help
 - `bin/tab.mjs` — CLI agents call (`pin`, `set`, `brief`, `notice`, `layout`, `read`, `events`, …)
 - `lib/server.mjs` — state file → live updates (SSE); serves sandboxed HTML widgets at `/w/:id`
 - `extension/` — MV3 new tab; sky follows time of day (dawn, day, dusk, night)
+- `lib/news.mjs` — Today's reading: RSS/Atom presets per topic (tech, ai, science, design, business, world, sports) + custom feeds, refreshed once a day, interleaved so no source dominates
 - `skill/SKILL.md` — teaches agents the rules (calm, ≤6 widgets, use `--ttl`, read `events`)
 
 Security: only the extension or the local page can read state (other origins get 403). Agent HTML runs in an opaque-origin sandbox and can't reach the page, cookies or tabs. Search always goes through the user's own search engine (`chrome.search`).

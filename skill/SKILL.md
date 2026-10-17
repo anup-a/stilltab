@@ -32,4 +32,12 @@ tab layout review ci note
 tab read        # what is on screen now
 tab events      # what the user did
 ```
+Below your lines sits **Today's reading**: headlines mixed across sources, refreshed daily. The user picks topics on the page; you can too:
+```
+tab news                         # today's headlines + what the user opened (see tab events, id "news")
+tab news topics tech ai
+tab news add https://example.com/feed.xml --name Example
+```
+Don't duplicate headlines as widgets. If `tab events` shows the user keeps opening one source or topic, suggest adding it.
+
 HTML widgets run sandboxed in their own origin; they can run scripts but cannot reach the page, cookies, or other tabs. Keep them light and transparent-backgrounded.

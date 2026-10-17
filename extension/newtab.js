@@ -104,6 +104,7 @@ function connect() {
     setStatus('live', 'agents connected')
     render(JSON.parse(e.data))
   }
+  es.addEventListener('news', (e) => renderNews(JSON.parse(e.data)))
   es.onerror = () => {
     setStatus('off', 'agents resting')
     resting(true)
@@ -298,6 +299,86 @@ addEventListener('message', (e) => {
     if (f.contentWindow === e.source) f.style.height = `${Math.min(Math.max(e.data.h, 40), 640)}px`
   }
 })
+
+// --- today's reading -----------------------------------------------------
+
+const TOPIC_NAMES = { tech: 'Tech', ai: 'AI', science: 'Science', design: 'Design', business: 'Business', world: 'World', sports: 'Sports' }
+const topicName = (t) => TOPIC_NAMES[t] || t[0].toUpperCase() + t.slice(1)
+const SHOWN = 5
+let newsSig = ''
+let newsExpanded = false
+let news = null
+
+function renderNews(n) {
+  const sig = JSON.stringify(n)
+  if (sig === newsSig) return
+  newsSig = sig
+  news = n
+  const box = $('news')
+  box.hidden = !n.enabled
+  if (!n.enabled) return
+
+  const label = [...n.topics.map(topicName), ...(n.feeds.length ? [`${n.feeds.length} feed${n.feeds.length > 1 ? 's' : ''}`] : [])].join(' · ') || 'Pick topics'
+  $('news-edit').replaceChildren(h('span', {}, label), chevron())
+
+  $('news-topics').replaceChildren(...n.topicsAvailable.map((t) => {
+    const on = n.topics.includes(t)
+    const b = h('button', { class: 'topic', type: 'button', 'aria-pressed': String(on) }, topicName(t))
+    b.addEventListener('click', () => {
+      const next = on ? n.topics.filter((x) => x !== t) : [...n.topics, t]
+      if (!next.length && !n.feeds.length) return toast('Keep at least one topic.')
+      act({ type: 'news-topics', value: next })
+    })
+    return b
+  }))
+
+  const list = $('news-list')
+  if (!n.items.length) {
+    list.replaceChildren(h('li', { class: 'news-empty' }, n.refreshing ? 'Gathering today\'s reading…' : 'Nothing new from these sources yet.'))
+  } else {
+    list.replaceChildren(...n.items.map((it, i) => {
+      const a = h('a', { class: 'story', href: safeUrl(it.url) },
+        h('span', { class: 'story-title' }, it.title),
+        h('span', { class: 'story-meta' },
+          h('img', { src: `https://www.google.com/s2/favicons?domain=${host(it.url)}&sz=32`, alt: '', width: 14, height: 14 }),
+          h('span', {}, [it.source, ago(it.publishedAt)].filter(Boolean).join(' · '))))
+      a.addEventListener('click', () => act({ type: 'open', id: 'news', value: it.url }))
+      const li = h('li', { class: 'story-row' }, a)
+      li.hidden = !newsExpanded && i >= SHOWN
+      li.style.setProperty('--i', i)
+      return li
+    }))
+  }
+  const more = $('news-more')
+  more.hidden = n.items.length <= SHOWN
+  more.textContent = newsExpanded ? 'Show less' : `${n.items.length - SHOWN} more`
+  $('news-when').textContent = n.refreshing ? 'Refreshing…' : n.fetchedAt ? `Updated ${when(n.fetchedAt)}` : ''
+}
+
+$('news-edit').addEventListener('click', () => {
+  const box = $('news')
+  const open = box.dataset.editing !== 'true'
+  box.dataset.editing = String(open)
+  $('news-edit').setAttribute('aria-expanded', String(open))
+})
+$('news-more').addEventListener('click', () => {
+  newsExpanded = !newsExpanded
+  newsSig = ''
+  if (news) renderNews(news)
+})
+
+function ago(iso) {
+  if (!iso) return ''
+  const m = Math.max(1, Math.round((Date.now() - Date.parse(iso)) / 6e4))
+  if (m < 60) return `${m}m`
+  const hrs = Math.round(m / 60)
+  return hrs < 24 ? `${hrs}h` : `${Math.round(hrs / 24)}d`
+}
+function when(iso) {
+  const d = new Date(iso)
+  const today = d.toDateString() === new Date().toDateString()
+  return (today ? '' : d.toLocaleDateString([], { weekday: 'short' }) + ' ') + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
 
 function act(body) {
   fetch(`${API}/api/action`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).catch(() => {})

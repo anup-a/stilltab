@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs'
 import { PORT, STATE_FILE, duration, event, load, prune, update } from '../lib/state.mjs'
+import { TOPICS, loadNews, newsConfig, refreshNews } from '../lib/news.mjs'
 
 const HELP = `tab: a new tab your agents run
 
@@ -8,6 +9,10 @@ const HELP = `tab: a new tab your agents run
   tab brief "text" | --clear              one calm line under the greeting
   tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
                                           AI shortcuts under search (%s = typed question)
+  tab news                                today's headlines as JSON
+  tab news topics tech ai …               pick topics (${Object.keys(TOPICS).join(', ')})
+  tab news add <rss-url> [--name N] | remove <rss-url>
+  tab news count 10 | on | off | refresh  refreshes daily on its own
   tab pin <id> [content] [options]        add or replace a widget
       content (pick one):
         --md "text" | --md-file f.md      markdown note
@@ -50,6 +55,8 @@ async function run() {
       update((s) => { s.ai = list })
       return ok()
     }
+    case 'news':
+      return news(pos)
     case 'pin': {
       const id = slug(need(pos[0], 'widget id'))
       const w = widgetFromFlags(id)
@@ -124,6 +131,50 @@ function widgetFromFlags(id) {
   if (flags.items) return { ...base, kind: 'list', items: JSON.parse(val(flags.items)).map((i) => (typeof i === 'string' ? { text: i } : i)) }
   if (flags.link) return { ...base, kind: 'link', url: val(flags.link), caption: flags.caption ?? null }
   throw new Error('Give content: --md, --text, --html(-file), --stat, --items or --link')
+}
+
+async function news([sub, ...args]) {
+  const setNews = (fn) => update((s) => { s.news = newsConfig(s); fn(s.news) })
+  switch (sub) {
+    case undefined: {
+      const n = loadNews()
+      return print({ ...newsConfig(load()), fetchedAt: n?.fetchedAt || null, items: n?.items || [], errors: n?.errors || [] })
+    }
+    case 'topics': {
+      const bad = args.filter((t) => !(t in TOPICS))
+      if (bad.length) throw new Error(`Unknown topic ${bad.join(', ')}. Pick from: ${Object.keys(TOPICS).join(', ')}`)
+      setNews((n) => { n.topics = args })
+      return ok()
+    }
+    case 'add': {
+      const url = need(args[0], 'feed url')
+      if (!/^https?:\/\//.test(url)) throw new Error('Feed url must start with http(s)://')
+      setNews((n) => { n.feeds = [...n.feeds.filter((f) => f.url !== url), { url, name: flags.name || null }] })
+      return ok()
+    }
+    case 'remove': {
+      const url = need(args[0], 'feed url')
+      setNews((n) => { n.feeds = n.feeds.filter((f) => f.url !== url) })
+      return ok()
+    }
+    case 'count':
+      setNews((n) => { n.count = Math.max(3, Math.min(30, Number(need(args[0], 'count')) || 10)) })
+      return ok()
+    case 'on': case 'off':
+      setNews((n) => { n.enabled = sub === 'on' })
+      return ok()
+    case 'refresh': {
+      // Ask the running server so open tabs update; otherwise fetch directly.
+      try {
+        const res = await fetch(`http://127.0.0.1:${PORT}/api/action`, { method: 'POST', headers: { 'content-type': 'application/json', origin: `http://127.0.0.1:${PORT}` }, body: JSON.stringify({ type: 'news-refresh' }) })
+        if (res.ok) return ok('refreshing')
+      } catch {}
+      const n = await refreshNews(newsConfig(load()))
+      return ok(`${n.items.length} headlines`)
+    }
+    default:
+      throw new Error(`Unknown news command "${sub}"`)
+  }
 }
 
 function demo() {

@@ -36,6 +36,24 @@
 
     <div class="column" id="column" aria-live="polite"></div>
 
+    <section class="news" id="news" hidden>
+      <div class="news-head">
+        <h2 class="group-label">Today's reading</h2>
+        <button class="news-edit" id="news-edit" type="button" aria-expanded="false"></button>
+      </div>
+      <div class="news-topics-wrap" id="news-topics-wrap">
+        <div class="news-topics-inner">
+          <div class="news-topics" id="news-topics" role="group" aria-label="Topics"></div>
+          <p class="news-hint">Add any RSS feed with <code>tab news add &lt;url&gt;</code></p>
+        </div>
+      </div>
+      <ol class="news-list" id="news-list"></ol>
+      <div class="news-foot">
+        <button class="news-more" id="news-more" type="button" hidden></button>
+        <span class="news-when" id="news-when"></span>
+      </div>
+    </section>
+
     <div class="resting" id="resting" hidden>
       <p class="resting-title">Your agents are resting.</p>
       <p class="resting-sub" id="resting-sub"></p>
