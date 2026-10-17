@@ -6,6 +6,8 @@ const HELP = `tab: a new tab your agents run
 
   tab serve [--port 7777]                 start the local server the new tab reads
   tab brief "text" | --clear              one calm line under the greeting
+  tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
+                                          AI shortcuts under search (%s = typed question)
   tab pin <id> [content] [options]        add or replace a widget
       content (pick one):
         --md "text" | --md-file f.md      markdown note
@@ -42,6 +44,12 @@ async function run() {
     case 'brief':
       update((s) => { s.brief = flags.clear ? null : need(pos[0], 'brief text') })
       return ok()
+    case 'ai': {
+      const list = flags.reset ? null : JSON.parse(need(pos[0], 'AI list JSON'))
+      if (list && !list.every((a) => a.name && /^https:\/\//.test(a.url))) throw new Error('Each AI needs a name and an https url')
+      update((s) => { s.ai = list })
+      return ok()
+    }
     case 'pin': {
       const id = slug(need(pos[0], 'widget id'))
       const w = widgetFromFlags(id)
@@ -145,7 +153,7 @@ function demo() {
 
 function parse(args) {
   const pos = [], flags = {}
-  const bool = new Set(['clear', 'json'])
+  const bool = new Set(['clear', 'json', 'reset'])
   for (let i = 0; i < args.length; i++) {
     const a = args[i]
     if (a.startsWith('--')) {

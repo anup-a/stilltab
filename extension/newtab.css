@@ -119,6 +119,34 @@ main {
 .search input::placeholder { color: var(--ink-3); }
 .search input::-webkit-search-cancel-button { display: none; }
 
+/* --- ask an AI ------------------------------------------------------ */
+
+.ask { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 16px; max-width: 660px; }
+.ai {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 30px; padding: 0 12px 0 9px; border-radius: 999px;
+  font-size: 13px; color: var(--ink-2); text-decoration: none;
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
+  backdrop-filter: blur(14px);
+  transition: background 250ms var(--ease), color 250ms var(--ease), transform 250ms var(--ease), box-shadow 250ms var(--ease);
+}
+.ai img { width: 16px; height: 16px; border-radius: 4px; filter: saturate(0.6); opacity: 0.85; transition: filter 250ms, opacity 250ms; }
+.ai:hover, .ai:focus-visible { color: var(--ink); background: var(--card); box-shadow: var(--card-shadow); transform: translateY(-1px); outline: none; }
+.ai:hover img, .ai:focus-visible img { filter: none; opacity: 1; }
+.ai:active { transform: translateY(0) scale(0.97); }
+/* once you've typed, the row reads as "send this to…" */
+.ask.has-text .ai { color: var(--ink); background: var(--card); }
+.ask.has-text .ai img { filter: none; opacity: 1; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 28px; z-index: 2; transform: translateX(-50%);
+  padding: 10px 16px; border-radius: 999px; font-size: 13px;
+  background: var(--card); border: 1px solid var(--card-edge); box-shadow: var(--card-shadow); backdrop-filter: blur(20px);
+  animation: rise 400ms var(--ease) both;
+}
+.toast[hidden] { display: none; }
+
 /* --- notice ----------------------------------------------------------- */
 
 .notice {

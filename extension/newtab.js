@@ -40,6 +40,62 @@ $('search').addEventListener('submit', (e) => {
   else location.href = `https://www.google.com/search?q=${encodeURIComponent(text)}`
 })
 
+// --- ask an AI: type, then pick who answers ------------------------------
+
+// %s marks where the question goes. Sites without a query param get it on the clipboard.
+const DEFAULT_AIS = [
+  { name: 'Claude', url: 'https://claude.ai/new?q=%s' },
+  { name: 'ChatGPT', url: 'https://chatgpt.com/?q=%s' },
+  { name: 'Gemini', url: 'https://gemini.google.com/app' },
+  { name: 'DeepSeek', url: 'https://chat.deepseek.com/' },
+  { name: 'Grok', url: 'https://grok.com/?q=%s' },
+  { name: 'Perplexity', url: 'https://www.perplexity.ai/search?q=%s' },
+]
+let ais = []
+
+function renderAsk(list) {
+  const sig = JSON.stringify(list)
+  if (sig === JSON.stringify(ais)) return
+  ais = list
+  $('ask').replaceChildren(...list.map((ai, i) => {
+    const a = h('a', { class: 'ai', 'data-i': i, title: `Ask ${ai.name}` },
+      h('img', { src: `https://www.google.com/s2/favicons?domain=${host(ai.url)}&sz=64`, alt: '', width: 16, height: 16 }),
+      h('span', {}, ai.name))
+    a.addEventListener('click', (e) => {
+      const text = $('q').value.trim()
+      if (text && !ai.url.includes('%s')) {
+        navigator.clipboard?.writeText(text)
+        toast(`Question copied. Paste it into ${ai.name}.`)
+      }
+    })
+    return a
+  }))
+  syncAsk()
+}
+
+// Keep hrefs current so ⌘-click and middle-click open a new tab naturally.
+function syncAsk() {
+  const text = $('q').value.trim()
+  for (const a of $('ask').children) {
+    const ai = ais[a.dataset.i]
+    a.href = ai.url.includes('%s')
+      ? (text ? ai.url.replace('%s', encodeURIComponent(text)) : `https://${host(ai.url)}`)
+      : ai.url
+  }
+  $('ask').classList.toggle('has-text', Boolean(text))
+}
+$('q').addEventListener('input', syncAsk)
+renderAsk(DEFAULT_AIS)
+
+let toastTimer
+function toast(msg) {
+  const t = $('toast')
+  t.textContent = msg
+  t.hidden = false
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => { t.hidden = true }, 2600)
+}
+
 // --- live state ----------------------------------------------------------
 
 function connect() {
@@ -81,6 +137,7 @@ const sectionOf = (w) => {
 }
 
 function render(state) {
+  renderAsk(Array.isArray(state.ai) && state.ai.length ? state.ai : DEFAULT_AIS)
   const brief = $('brief')
   if (brief.textContent !== (state.brief || '')) {
     brief.textContent = state.brief || ''
