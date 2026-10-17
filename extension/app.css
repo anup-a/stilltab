@@ -63,6 +63,9 @@ a { color: inherit; }
 .o2 { width: 46vmax; height: 46vmax; right: -16vmax; top: 6vmax; background: var(--o2); animation: drift2 90s ease-in-out infinite alternate; }
 .o3 { width: 40vmax; height: 40vmax; left: 22vmax; bottom: -24vmax; background: var(--o3); animation: drift3 80s ease-in-out infinite alternate; }
 body[data-theme="dark"] .orb { opacity: 0.55; }
+/* The panel is for reading: a fainter, still sky so the headlines lead. */
+body[data-page="feed"] .orb { opacity: 0.4; animation: none; }
+body[data-page="feed"][data-theme="dark"] .orb { opacity: 0.25; }
 
 @keyframes drift1 { to { transform: translate(8vmax, 6vmax) scale(1.08); } }
 @keyframes drift2 { to { transform: translate(-10vmax, 8vmax) scale(0.94); } }
