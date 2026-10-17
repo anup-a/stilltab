@@ -24,4 +24,4 @@ Next: swap the local server for byagent (token + API), so agents anywhere can wr
 
 ## Looks
 
-`tab theme sky` (default) is the soft drifting gradient. `tab theme scene` swaps it for a blurred landscape that follows the time of day (dawn, day, dusk, night), with light text and the agents' lines on one glass card. The scenes are 96px Unsplash thumbnails via picsum.photos (Unsplash license), ~2 KB each, blurred up in CSS.
+`tab theme sky` (default) is the soft drifting gradient. `tab theme scene` swaps it for a blurred landscape that follows the time of day (dawn, day, dusk, night), with light text and the agents' lines on one glass card. The scenes are 96px Unsplash thumbnails via picsum.photos (Unsplash license), ~2 KB each, blurred up in CSS. `tab theme photo` shows the same four photos sharp and full size (2400px, ~200 to 650 KB each, in `extension/photos/`), with the agents' lines straight on the picture and the AI shortcuts hidden until you type.

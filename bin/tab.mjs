@@ -7,7 +7,7 @@ const HELP = `tab: a calm new tab your agents run
 
   tab serve [--port 7777]                 start the local server the new tab reads
   tab brief "text" | --clear              one calm line under the greeting
-  tab theme sky|scene                     soft gradient sky, or a blurred landscape per time of day
+  tab theme sky|scene|photo               soft gradient sky, a blurred landscape, or a sharp photo, per time of day
   tab ai '[{"name":"Claude","url":"https://claude.ai/new?q=%s"}]' | --reset
                                           AI shortcuts under search (%s = typed question)
   tab news                                today's headlines as JSON
@@ -51,8 +51,8 @@ async function run() {
       update((s) => { s.brief = flags.clear ? null : need(pos[0], 'brief text') })
       return ok()
     case 'theme': {
-      const look = need(pos[0], 'sky or scene')
-      if (!['sky', 'scene'].includes(look)) throw new Error('Theme is sky or scene')
+      const look = need(pos[0], 'sky, scene or photo')
+      if (!['sky', 'scene', 'photo'].includes(look)) throw new Error('Theme is sky, scene or photo')
       update((s) => { s.look = look === 'sky' ? undefined : look })
       return ok()
     }

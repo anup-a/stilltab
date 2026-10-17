@@ -258,7 +258,9 @@ const sectionOf = (w) => {
 }
 
 function render(state) {
-  document.body.dataset.look = state.look === 'scene' ? 'scene' : 'sky'
+  document.body.dataset.look = state.look === 'scene' || state.look === 'photo' ? 'scene' : 'sky'
+  // "photo" is the scene look with the full photograph; the side panel keeps the frosted thumbnail
+  document.body.toggleAttribute('data-photo', state.look === 'photo' && PAGE === 'newtab')
   if (!column) return
   renderAsk(Array.isArray(state.ai) && state.ai.length ? state.ai : DEFAULT_AIS)
   const brief = $('brief')

@@ -485,6 +485,56 @@ body[data-page="newtab"][data-look="scene"]:has(.drawer:not([hidden])) .reading-
 body[data-page="feed"][data-look="scene"] .sky::before { filter: blur(48px) saturate(1.1); }
 body[data-page="feed"][data-look="scene"] .sky::after { background: rgba(14, 14, 26, 0.42); }
 
+/* --- "photo" look: the scene look, but with the real photograph, sharp ------------
+   Builds on data-look="scene" (white ink, matte, glass drawer) and takes boxes away:
+   no card behind the list, AI shortcuts only once you type, quiet edges. */
+
+body[data-photo][data-scene="dawn"]  { --photo: url(photos/dawn.jpg); }
+body[data-photo][data-scene="day"]   { --photo: url(photos/day.jpg); }
+body[data-photo][data-scene="dusk"]  { --photo: url(photos/dusk.jpg); }
+body[data-photo][data-scene="night"] { --photo: url(photos/night.jpg); }
+/* the 2 KB thumbnail paints first and the full photo lands on top of it */
+body[data-photo] .sky::before { inset: 0; background: var(--photo) center / cover, var(--scene) center / cover; filter: none; }
+body[data-photo] .sky::after {
+  background:
+    radial-gradient(ellipse 55% 40% at 50% 30%, rgba(0, 0, 0, 0.2), transparent 70%),
+    radial-gradient(ellipse 45% 45% at 50% 72%, rgba(0, 0, 0, 0.3), transparent 75%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 26%, rgba(0, 0, 0, 0.06) 48%, rgba(0, 0, 0, 0.5));
+}
+body[data-photo] main { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 2px 22px rgba(0, 0, 0, 0.35); }
+body[data-photo] .greet { font-size: clamp(48px, 7.6vw, 92px); font-weight: 300; }
+body[data-photo] .time { color: rgba(255, 255, 255, 0.78); }
+body[data-photo] .brief { color: rgba(255, 255, 255, 0.9); }
+
+body[data-photo] .search {
+  background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(22px) saturate(1.1);
+}
+body[data-photo] .search input::placeholder { color: rgba(255, 255, 255, 0.72); }
+body[data-photo] .search svg { stroke: rgba(255, 255, 255, 0.8); }
+
+/* AI shortcuts wait until there's something to send, or you reach for them */
+body[data-photo] .ask { opacity: 0; transform: translateY(-4px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
+body[data-photo] .ask.has-text, body[data-photo] .hero:hover .ask, body[data-photo] .ask:focus-within { opacity: 1; transform: none; }
+
+/* the list sits straight on the photo; glass appears only under the line you're on */
+body[data-photo][data-look="scene"] .column { background: none; border: 0; box-shadow: none; backdrop-filter: none; padding: 0; }
+body[data-photo] .group-label { color: rgba(255, 255, 255, 0.72); }
+body[data-photo] .row-meta, body[data-photo] .chev { color: rgba(255, 255, 255, 0.8); }
+body[data-photo] .group[data-section="lately"] .row-title { color: rgba(255, 255, 255, 0.8); }
+body[data-photo] .row:hover, body[data-photo] .row[data-open="true"] {
+  background: rgba(255, 255, 255, 0.14); backdrop-filter: blur(22px) saturate(1.1);
+  text-shadow: none;
+}
+body[data-photo] .row > .x { right: -38px; }
+body[data-photo] .row:hover .chev { opacity: 1; }
+
+/* the edges stay out of the way until you look at them */
+body[data-photo] .status, body[data-photo] .agent-hint { opacity: 0.7; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); transition: opacity 300ms var(--ease); }
+body[data-photo] .status:hover, body[data-photo] .agent-hint:hover, body[data-photo] .agent-hint:focus-visible { opacity: 1; }
+body[data-photo] .reading-toggle { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; }
 }

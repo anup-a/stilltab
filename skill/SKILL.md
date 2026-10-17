@@ -29,7 +29,7 @@ echo '<div>…</div>' | tab pin tool --title "Tiny tool" --html - --size l
 tab notice "Deploy is waiting for approval" --level warn
 tab unpin ci --after 2h
 tab layout review ci note
-tab theme scene  # or sky: the look of the page (the user may have picked one; ask before changing)
+tab theme photo  # or scene, or sky: the look of the page (the user may have picked one; ask before changing)
 tab read        # what is on screen now
 tab events      # what the user did
 ```
