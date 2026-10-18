@@ -407,16 +407,40 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 .hide-usage .usage, .hide-weather .weather, .hide-ask .ask, body:not(.show-sites) .sites, .hide-reading .reading-toggle, .hide-hint .agent-hint { display: none !important; }
 
 /* --- plan usage: top left, opposite "Today's reading" --- */
-.usage {
-  position: fixed; top: 18px; left: 20px; z-index: 1;
-  display: flex; align-items: center; gap: 16px;
-  height: 32px; padding: 0 14px; border-radius: 999px;
-  font: 12px var(--sans); color: var(--ink-2); cursor: default;
+.usage { position: fixed; top: 18px; left: 20px; z-index: 4; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; font: 12px var(--sans); color: var(--ink-2); }
+.usage-row, .usage-more {
   background: color-mix(in srgb, var(--card) 55%, transparent);
   border: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
   backdrop-filter: blur(14px);
 }
-.usage[hidden] { display: none; }
+.usage-row {
+  display: flex; align-items: center; gap: 16px;
+  height: 32px; padding: 0 14px; border-radius: 999px;
+  font: inherit; color: inherit; cursor: pointer;
+  transition: background 250ms var(--ease), box-shadow 250ms var(--ease);
+}
+.usage-row:hover, .usage-row:focus-visible, .usage-row[aria-expanded="true"] { background: var(--card); box-shadow: var(--card-shadow); outline: none; }
+.usage[hidden], .usage-more[hidden] { display: none; }
+/* The details: each window, how much is used, and when it renews. */
+.usage-more {
+  min-width: 320px; padding: 14px 16px 12px; border-radius: 18px;
+  background: var(--card); box-shadow: var(--card-shadow); backdrop-filter: blur(24px) saturate(1.2);
+}
+.um-tool + .um-tool { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--hair); }
+.um-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.um-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.um-plan { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.um-win { display: grid; grid-template-columns: 1fr auto; column-gap: 16px; align-items: center; padding: 5px 0; }
+.um-label { color: var(--ink); font-size: 12.5px; }
+.um-pct { font-variant-numeric: tabular-nums; color: var(--ink); font-size: 12.5px; text-align: right; }
+.um-bar { grid-column: 1 / -1; height: 4px; margin: 6px 0 5px; border-radius: 99px; background: color-mix(in srgb, currentColor 16%, transparent); overflow: hidden; }
+.um-bar i { display: block; height: 100%; border-radius: inherit; background: var(--ink-2); }
+.um-win[data-level="mid"] .um-bar i { background: #e0a43a; }
+.um-win[data-level="high"] .um-bar i { background: #e2624f; }
+.um-reset { grid-column: 1 / -1; color: var(--ink-3); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.um-off { color: var(--ink-3); font-size: 12px; line-height: 1.5; }
+.um-off code { font: 11.5px ui-monospace, Menlo, monospace; color: var(--ink-2); }
+.um-foot { margin-top: 12px; color: var(--ink-3); font-size: 11px; }
 .usage-tool { display: flex; align-items: center; gap: 9px; }
 .usage-tool + .usage-tool { padding-left: 16px; border-left: 1px solid var(--hair); }
 .usage-name { font-weight: 500; color: var(--ink); }
@@ -604,7 +628,9 @@ body[data-photo] .row:hover .chev { opacity: 1; }
 /* the edges stay out of the way until you look at them */
 body[data-photo] .status, body[data-photo] .agent-hint { opacity: 0.7; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); transition: opacity 300ms var(--ease); }
 body[data-photo] .status:hover, body[data-photo] .agent-hint:hover, body[data-photo] .agent-hint:focus-visible { opacity: 1; }
-body[data-photo] .usage { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+body[data-photo] .usage-row { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+body[data-photo] .usage-row:hover, body[data-photo] .usage-row[aria-expanded="true"] { background: rgba(255, 255, 255, 0.2); }
+body[data-photo] .usage-more { background: rgba(28, 24, 30, 0.55); border-color: rgba(255, 255, 255, 0.16); backdrop-filter: blur(28px) saturate(1.2); }
 body[data-photo] .reading-toggle, body[data-photo] .look-switch { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); }
 body[data-look="scene"] .look-switch button { color: rgba(255, 255, 255, 0.72); }
 body[data-look="scene"] .look-switch button[aria-checked="true"], body[data-look="scene"] .look-switch button:hover { color: #fff; }

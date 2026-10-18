@@ -253,47 +253,63 @@ function toast(msg) {
 
 // --- plan usage: one small meter per window, per coding agent -----------
 
-const until = (iso) => {
+const WINDOW_NAME = { '5h': '5-hour window', week: 'Weekly limit' }
+
+// "in 3h 12m · 2:40 PM" today, "Thu 9:00 AM · in 3 days" later.
+function renewal(iso) {
   const ms = Date.parse(iso) - Date.now()
-  if (!(ms > 0)) return ''
-  if (ms < 864e5) { const h = Math.floor(ms / 36e5), m = Math.round((ms % 36e5) / 6e4); return `resets in ${h ? `${h}h ` : ''}${m}m` }
-  return `resets ${new Date(iso).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })}`
+  if (!(ms > 0)) return 'renewing now'
+  const at = new Date(iso)
+  const clock = at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  if (ms < 864e5) { const h = Math.floor(ms / 36e5), m = Math.round((ms % 36e5) / 6e4); return `Renews in ${h ? `${h}h ` : ''}${m}m · ${clock}` }
+  const days = Math.round(ms / 864e5)
+  return `Renews ${at.toLocaleDateString([], { weekday: 'short' })} ${clock} · in ${days} day${days === 1 ? '' : 's'}`
 }
-const WINDOW_NAME = { '5h': '5-hour window', week: 'This week' }
 
 function renderUsage(u) {
-  const box = $('usage')
+  const box = $('usage'), row = $('usage-row'), more = $('usage-more')
   if (!box) return
   box.lastUsage = u
   const tools = u?.tools || []
   box.hidden = !tools.length
-  box.replaceChildren(...tools.map((t) => {
-    const el = document.createElement('div')
-    el.className = 'usage-tool'
-    const name = Object.assign(document.createElement('span'), { className: 'usage-name', textContent: t.name })
-    el.append(name)
-    if (t.state !== 'ok') {
-      el.append(Object.assign(document.createElement('span'), { className: 'usage-off', textContent: 'signed out' }))
-      el.title = `${t.name}: sign in again to see usage (run ${t.id === 'codex' ? 'codex login' : 'claude'})`
-      return el
-    }
-    const tips = [`${t.name}${t.plan ? ` (${t.plan})` : ''}`]
+  // the pill: one small meter per window
+  row.replaceChildren(...tools.map((t) => {
+    const el = h('span', { class: 'usage-tool' }, h('span', { class: 'usage-name' }, t.name))
+    if (t.state !== 'ok') { el.append(h('span', { class: 'usage-off' }, 'signed out')); return el }
     for (const w of t.windows) {
-      const m = document.createElement('span')
-      m.className = 'meter'
-      m.dataset.level = w.used >= 90 ? 'high' : w.used >= 70 ? 'mid' : 'low'
-      m.innerHTML = `<span class="meter-label"></span><span class="meter-bar"><i></i></span><span class="meter-pct"></span>`
-      m.querySelector('.meter-label').textContent = w.label
+      const m = h('span', { class: 'meter', 'data-level': w.used >= 90 ? 'high' : w.used >= 70 ? 'mid' : 'low' },
+        h('span', { class: 'meter-label' }, w.label), h('span', { class: 'meter-bar' }, h('i')), h('span', { class: 'meter-pct' }, `${w.used}%`))
       m.querySelector('i').style.width = `${w.used}%`
-      m.querySelector('.meter-pct').textContent = `${w.used}%`
       el.append(m)
-      tips.push(`${WINDOW_NAME[w.label] || w.label}: ${w.used}% used${w.resetsAt ? `, ${until(w.resetsAt)}` : ''}`)
     }
-    if (t.asOf) tips.push(`as of ${new Date(t.asOf).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' })}`)
-    el.title = tips.join('\n')
     return el
   }))
+  // the details: what each window is, how much is used, when it renews
+  const asOf = tools.map((t) => t.asOf).filter(Boolean).sort().pop()
+  more.replaceChildren(...tools.map((t) => {
+    const el = h('div', { class: 'um-tool' }, h('div', { class: 'um-head' }, h('span', { class: 'um-name' }, t.name), t.plan ? h('span', { class: 'um-plan' }, t.plan) : ''))
+    if (t.state !== 'ok') {
+      el.append(h('p', { class: 'um-off' }, 'Signed out. Run ', h('code', {}, t.id === 'codex' ? 'codex login' : 'claude'), ' in your terminal to see usage.'))
+      return el
+    }
+    for (const w of t.windows) {
+      const bar = h('div', { class: 'um-bar' }, h('i'))
+      bar.firstChild.style.width = `${w.used}%`
+      el.append(h('div', { class: 'um-win', 'data-level': w.used >= 90 ? 'high' : w.used >= 70 ? 'mid' : 'low' },
+        h('span', { class: 'um-label' }, WINDOW_NAME[w.label] || w.label), h('span', { class: 'um-pct' }, `${w.used}% used`),
+        bar, h('span', { class: 'um-reset' }, w.resetsAt ? renewal(w.resetsAt) : 'Renewal time not reported')))
+    }
+    return el
+  }), asOf ? h('p', { class: 'um-foot' }, `Updated ${new Date(asOf).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`) : '')
 }
+// Click the pill for the details; Esc or a click elsewhere closes them.
+function showUsageMore(on) {
+  $('usage-more').hidden = !on
+  $('usage-row').setAttribute('aria-expanded', String(on))
+}
+$('usage-row')?.addEventListener('click', () => showUsageMore($('usage-more').hidden))
+document.addEventListener('click', (e) => { if ($('usage') && !$('usage').contains(e.target) && !$('usage-more').hidden) showUsageMore(false) })
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('usage-more') && !$('usage-more').hidden) showUsageMore(false) })
 setInterval(() => { const b = $('usage'); if (b?.lastUsage) renderUsage(b.lastUsage) }, 6e4) // keep "resets in" honest
 
 // --- weather: next to the time, when the user (or their agent) picked a place ---

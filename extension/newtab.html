@@ -45,7 +45,10 @@
     </div>
   </main>
 
-  <div class="usage" id="usage" aria-label="Agent plan usage" hidden></div>
+  <div class="usage" id="usage" hidden>
+    <button type="button" class="usage-row" id="usage-row" aria-expanded="false" aria-controls="usage-more" aria-label="Agent plan usage. Show details"></button>
+    <div class="usage-more" id="usage-more" hidden></div>
+  </div>
 
   <div class="corner" id="corner">
     <div class="look-switch" id="look-switch" role="radiogroup" aria-label="Background">
