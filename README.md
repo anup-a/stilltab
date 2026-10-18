@@ -9,10 +9,26 @@ Works with Claude Code, Codex, Gemini CLI, OpenCode and any agent that can run a
 
 Every new tab shows one quiet page: what needs you, what's coming up, what just finished, over a photo that follows the time of day. Your agent decides what matters most and keeps it tidy through a small CLI, `tab`, on a schedule you choose.
 
-- **Needs you, Coming up, Lately:** one line each with a short number ("3 open", "12 days"). Click for details. Tick or dismiss and your agent adapts next run.
-- **A routine:** your agent runs headless every few hours and refreshes the page.
-- **Plan usage** for Claude Code and Codex, **weather**, AI shortcuts, your most visited sites, and **Today's reading** in Chrome's side panel.
-- **Private:** everything lives in `~/.stilltab` on your machine and is served from 127.0.0.1. No accounts, no analytics.
+## Features
+
+<table>
+<tr>
+<td width="50%" valign="top"><img src="docs/img/readme/f-brief.jpg" alt="The greeting with the time, weather and a one-line brief"><h3>A brief from your agent</h3><p>One line about what matters most right now, under the time and the weather.</p></td>
+<td width="50%" valign="top"><img src="docs/img/readme/f-lines.jpg" alt="Lines grouped under Needs you and Coming up"><h3>Needs you, Coming up, Lately</h3><p>At most six short lines, each with a number like "3 open" or "12 days". Done things leave on their own.</p></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/img/readme/f-expanded.jpg" alt="A line opened to show three pull requests"><h3>Open any line</h3><p>Click for the details: a checklist, a note or links. Tick, dismiss or reorder, and your agent sees it next run.</p></td>
+<td width="50%" valign="top"><img src="docs/img/readme/f-usage.jpg" alt="The plan usage pill with session and weekly meters"><h3>Plan usage at a glance</h3><p>How much of your Claude Code and Codex limits you have used this session and this week. Hover for reset times.</p></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/img/readme/f-ask.jpg" alt="Search with AI shortcuts and a row of frequent sites"><h3>Search, ask any AI, your sites</h3><p>Your own search engine, one-click Claude, ChatGPT, Gemini and more, and your most visited sites if you want them.</p></td>
+<td width="50%" valign="top"><img src="docs/img/readme/f-reading.jpg" alt="Today's reading panel with headlines"><h3>Today's reading</h3><p>Headlines from topics and feeds you pick, mixed so no one source takes over, in Chrome's side panel.</p></td>
+</tr>
+</table>
+
+**Runs on its own.** Your agent refreshes the tab on a schedule you choose (every 2 hours from 8 to 22, say), headless, with `claude -p`, `codex exec` or any CLI agent.<br>
+**Works with any agent.** Claude Code, Codex, Gemini CLI, OpenCode, or anything that can run a shell command.<br>
+**Private.** Everything lives in `~/.stilltab` on your machine and is served from 127.0.0.1. No accounts, no analytics.
 
 ## Install
 
@@ -46,12 +62,6 @@ It asks a few questions, all with defaults, then sets everything up: keeps the s
 
 **5. That's it.** Your agent keeps the tab current from now on. Ask it to change anything ("hide the weather", "refresh every hour").
 
-<table>
-<tr>
-<td width="50%"><img src="docs/img/readme/expanded.jpg" alt="A line opened to show the pull requests waiting on you"><p align="center"><sub>Click a line for details</sub></p></td>
-<td width="50%"><img src="docs/img/readme/reading.jpg" alt="Today's reading open beside the tab"><p align="center"><sub>Today's reading, from topics and feeds you pick</sub></p></td>
-</tr>
-</table>
 
 ## Looks
 
