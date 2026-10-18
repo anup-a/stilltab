@@ -91,9 +91,11 @@ h1 { margin-top: 18px; font-size: clamp(56px, 9vw, 112px); line-height: 1; }
   padding: 0 8px 0 20px; border-radius: 999px; text-shadow: none;
 }
 .search svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--ink-3); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.search code { flex: 1; min-width: 0; text-align: left; font-size: 15px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.search button { height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.9); color: #2a2629; font: 500 14px var(--sans); cursor: pointer; transition: background 300ms var(--ease); }
-.search button:hover { background: #fff; }
+.search .lead { flex: 1; min-width: 0; text-align: left; font-size: 15px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search .get { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; text-decoration: none; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.9); color: #2a2629; font: 500 14px var(--sans); cursor: pointer; transition: background 300ms var(--ease); }
+.search .get:hover { background: #fff; }
+.next { width: min(100%, 560px); margin-top: 14px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.next code { font-size: 12px; }
 .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
 .ai { display: inline-flex; align-items: center; height: 34px; padding: 0 15px; border-radius: 999px; color: var(--ink); text-decoration: none; font: 14px var(--sans); cursor: pointer; transition: background 300ms var(--ease); }
 .ai:hover { background: var(--glass-hover); }
@@ -134,7 +136,7 @@ h2 { font-size: clamp(36px, 5vw, 56px); line-height: 1.1; }
   .frame { padding: 0 20px; }
   .hint { display: none; }
   .row-meta { display: none; }
-  .search code { font-size: 13px; }
+  .search .lead { font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .frame { scroll-behavior: auto; }

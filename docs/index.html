@@ -39,10 +39,11 @@
       <p class="brief">This is Stilltab: one calm new tab that your AI agents keep current.</p>
 
       <div class="search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l6-5-6-5M12 19h8"/></svg>
-        <code id="cmd">npm i -g github:anup-a/stilltab</code>
-        <button type="button" id="copy">Copy</button>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        <span class="lead">Get the Chrome extension</span>
+        <a class="get" href="https://github.com/anup-a/stilltab/releases/latest/download/stilltab-0.1.0.zip">Download</a>
       </div>
+      <p class="next">Unzip, open <code>chrome://extensions</code>, turn on Developer mode, Load unpacked. Your first new tab gives you a prompt for your agent; it installs the rest.</p>
       <nav class="pills">
         <a class="ai" href="https://github.com/anup-a/stilltab#setup">Setup guide</a>
         <a class="ai" href="#how">How it works</a>
@@ -54,15 +55,15 @@
       <div class="group">
         <p class="group-label">How it works</p>
         <details class="row">
-          <summary><span class="row-title">Install the extension and the <code>tab</code> command</span><span class="row-meta">2 min</span><span class="chev"></span></summary>
+          <summary><span class="row-title">Add the extension to Chrome</span><span class="row-meta">1 min</span><span class="chev"></span></summary>
           <div class="more">
-            <p>Clone the repo or install with npm, then load <code>extension/</code> in Chrome from <code>chrome://extensions</code> (Developer mode, Load unpacked). It also runs as a plain page in any browser.</p>
+            <p>Download the zip, unzip it, then load the folder in Chrome from <code>chrome://extensions</code> (Developer mode, Load unpacked). The Chrome Web Store listing is on its way.</p>
           </div>
         </details>
         <details class="row">
           <summary><span class="row-title">Paste one prompt into your agent</span><span class="row-meta">once</span><span class="chev"></span></summary>
           <div class="more">
-            <p>Your first new tab shows a short prompt. Paste it into Claude Code, Codex or any agent in your terminal. It asks which parts of your life to look after, how often to refresh, and what the page should show.</p>
+            <p>Your first new tab shows a short prompt. Paste it into Claude Code, Codex or any agent in your terminal. It installs the small <code>tab</code> command, then asks which parts of your life to look after, how often to refresh, and what the page should show.</p>
           </div>
         </details>
         <details class="row">
@@ -128,7 +129,7 @@ tab routine set --every 2h --hours 8-22 --agent claude</code></pre>
 
     <section class="end">
       <h2>Open a new tab. Breathe out.</h2>
-      <a class="ai big" href="https://github.com/anup-a/stilltab#setup">Get Stilltab</a>
+      <a class="ai big" href="https://github.com/anup-a/stilltab/releases/latest/download/stilltab-0.1.0.zip">Get Stilltab</a>
     </section>
   </main>
 
@@ -142,12 +143,6 @@ tab routine set --every 2h --hours 8-22 --agent claude</code></pre>
     const now = new Date(), hr = now.getHours()
     $('time').textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     $('greet').textContent = hr < 5 ? 'Still up' : hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : hr < 21 ? 'Good evening' : 'Good night'
-
-    $('copy').addEventListener('click', async () => {
-      await navigator.clipboard?.writeText($('cmd').textContent)
-      $('copy').textContent = 'Copied'
-      setTimeout(() => ($('copy').textContent = 'Copy'), 1600)
-    })
 
     // Changing the time of day is the one motion on the page: a slow crossfade.
     const root = document.documentElement
