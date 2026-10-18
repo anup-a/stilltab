@@ -47,10 +47,20 @@
 
   <div class="usage" id="usage" aria-label="Agent plan usage" hidden></div>
 
-  <button class="reading-toggle" id="reading-toggle" aria-pressed="false" title="Today's reading (⌥⇧N)">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c2.6-.9 5.3-.6 8 1 2.7-1.6 5.4-1.9 8-1v13c-2.6-.9-5.3-.6-8 1-2.7-1.6-5.4-1.9-8-1z"/><path d="M12 6.5v13"/></svg>
-    <span>Today's reading</span>
-  </button>
+  <div class="corner" id="corner">
+    <div class="look-switch" id="look-switch" role="radiogroup" aria-label="Background">
+      <button type="button" role="radio" aria-checked="false" data-look="photo" title="Nature photo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18.5l5.5-7 3.5 4.2 2.5-3 6.5 5.8z"/><circle cx="16.5" cy="7.5" r="1.8"/></svg>
+      </button>
+      <button type="button" role="radio" aria-checked="false" data-look="sky" title="Gradient sky">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="look-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".15"/><stop offset="1" stop-color="currentColor"/></linearGradient></defs><circle cx="12" cy="12" r="7.5" fill="url(#look-g)"/></svg>
+      </button>
+    </div>
+    <button class="reading-toggle" id="reading-toggle" aria-pressed="false" title="Today's reading (⌥⇧N)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c2.6-.9 5.3-.6 8 1 2.7-1.6 5.4-1.9 8-1v13c-2.6-.9-5.3-.6-8 1-2.7-1.6-5.4-1.9-8-1z"/><path d="M12 6.5v13"/></svg>
+      <span>Today's reading</span>
+    </button>
+  </div>
   <aside class="drawer" id="drawer" aria-label="Today's reading" hidden></aside>
 
   <dialog class="setup" id="setup" aria-labelledby="setup-title">

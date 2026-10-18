@@ -431,8 +431,9 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 
 /* --- today's reading: button on the new tab, drawer when there's no side panel --- */
 
+/* Top right: the background switch and the reading button, side by side. */
+.corner { position: fixed; top: 18px; right: 20px; z-index: 3; display: flex; align-items: center; gap: 8px; }
 .reading-toggle {
-  position: fixed; top: 18px; right: 20px; z-index: 3;
   display: inline-flex; align-items: center; gap: 7px;
   height: 32px; padding: 0 13px 0 10px; border-radius: 999px;
   font: 13px var(--sans); color: var(--ink-2); cursor: pointer;
@@ -443,7 +444,23 @@ body[data-page="feed"] .story { padding-top: 11px; padding-bottom: 11px; }
 }
 .reading-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 .reading-toggle:hover, .reading-toggle:focus-visible, .reading-toggle[aria-pressed="true"] { color: var(--ink); background: var(--card); box-shadow: var(--card-shadow); outline: none; }
-body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
+body:has(.drawer:not([hidden])) .corner { right: 400px; }
+/* Nature photo or gradient sky, right on the tab. Same glass as the reading button. */
+.look-switch {
+  display: inline-flex; gap: 2px; height: 32px; padding: 2px; border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
+  backdrop-filter: blur(14px);
+}
+.look-switch button {
+  display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 999px;
+  background: none; color: var(--ink-3); cursor: pointer;
+  transition: background 250ms var(--ease), color 250ms var(--ease);
+}
+.look-switch button:hover, .look-switch button:focus-visible { color: var(--ink); outline: none; }
+.look-switch button[aria-checked="true"] { color: var(--ink); background: var(--card); box-shadow: var(--card-shadow); }
+.look-switch svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.look-switch [data-look="sky"] svg { stroke: none; }
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 2; width: 380px;
   border-left: 1px solid color-mix(in srgb, var(--card-edge) 70%, transparent);
@@ -459,7 +476,7 @@ body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
   .reading-toggle span { display: none; }
   .reading-toggle { padding: 0 8px; }
   .drawer { width: 100%; }
-  body:has(.drawer:not([hidden])) .reading-toggle { right: 20px; }
+  body:has(.drawer:not([hidden])) .corner { right: 20px; }
 }
 
 @media (max-width: 680px) {
@@ -535,11 +552,11 @@ body[data-page="newtab"][data-look="scene"] { background: #36353a; }
 /* 18px: the same curve as Safari's address bar and toolbar buttons (36pt tall capsules), and close to its window corner. */
 body[data-page="newtab"][data-look="scene"] .sky { inset: 10px; border-radius: 18px; }
 body[data-page="newtab"][data-look="scene"] .drawer { top: 10px; right: 10px; bottom: 10px; border-radius: 0 18px 18px 0; overflow: hidden; }
-body[data-page="newtab"][data-look="scene"] .reading-toggle { top: 24px; right: 26px; }
+body[data-page="newtab"][data-look="scene"] .corner { top: 24px; right: 26px; }
 body[data-page="newtab"][data-look="scene"] .status { left: 30px; bottom: 24px; }
 body[data-page="newtab"][data-look="scene"] .usage { top: 24px; left: 26px; color: var(--ink); }
 body[data-page="newtab"][data-look="scene"] .agent-hint { right: 24px; bottom: 20px; }
-body[data-page="newtab"][data-look="scene"]:has(.drawer:not([hidden])) .reading-toggle { right: 406px; }
+body[data-page="newtab"][data-look="scene"]:has(.drawer:not([hidden])) .corner { right: 406px; }
 /* Chrome's side panel can't see the page behind it, so it frosts its own copy of the scene. */
 body[data-page="feed"][data-look="scene"] .sky::before { filter: blur(48px) saturate(1.1); }
 body[data-page="feed"][data-look="scene"] .sky::after { background: rgba(14, 14, 26, 0.42); }
@@ -588,7 +605,9 @@ body[data-photo] .row:hover .chev { opacity: 1; }
 body[data-photo] .status, body[data-photo] .agent-hint { opacity: 0.7; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); transition: opacity 300ms var(--ease); }
 body[data-photo] .status:hover, body[data-photo] .agent-hint:hover, body[data-photo] .agent-hint:focus-visible { opacity: 1; }
 body[data-photo] .usage { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
-body[data-photo] .reading-toggle { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); }
+body[data-photo] .reading-toggle, body[data-photo] .look-switch { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); }
+body[data-look="scene"] .look-switch button { color: rgba(255, 255, 255, 0.72); }
+body[data-look="scene"] .look-switch button[aria-checked="true"], body[data-look="scene"] .look-switch button:hover { color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; }

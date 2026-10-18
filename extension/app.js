@@ -402,10 +402,20 @@ const sectionOf = (w) => {
   return SECTIONS.some(([k]) => k === s) ? s : DEFAULT_SECTION[w.kind] || 'lately'
 }
 
-function render(state) {
-  document.body.dataset.look = state.look === 'scene' || state.look === 'photo' ? 'scene' : 'sky'
+function applyLook(look) {
+  document.body.dataset.look = look === 'scene' || look === 'photo' ? 'scene' : 'sky'
   // "photo" is the scene look with the full photograph; the side panel keeps the frosted thumbnail
-  document.body.toggleAttribute('data-photo', state.look === 'photo' && PAGE === 'newtab')
+  document.body.toggleAttribute('data-photo', look === 'photo' && PAGE === 'newtab')
+  for (const b of document.querySelectorAll('#look-switch button')) b.setAttribute('aria-checked', String(b.dataset.look === (look === 'scene' ? 'photo' : look || 'sky')))
+}
+
+// The background switch on the tab: nature photo or gradient sky. Saved like `tab theme`.
+for (const b of document.querySelectorAll('#look-switch button')) {
+  b.addEventListener('click', () => { applyLook(b.dataset.look); act({ type: 'look', value: b.dataset.look }) })
+}
+
+function render(state) {
+  applyLook(state.look)
   if (!column) return
   // which parts of the page the user wants (tab show <part> on|off)
   for (const part of ['usage', 'weather', 'ask', 'reading', 'hint']) document.body.classList.toggle(`hide-${part}`, state.show?.[part] === false)

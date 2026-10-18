@@ -67,7 +67,7 @@ It asks a few questions, all with defaults, then sets everything up: keeps the s
 
 ## Looks
 
-Dawn, day, dusk and night each have their own photo. Dawn and dusk pick a different one every day. Or switch to a blurred scene or a soft gradient sky with `tab theme scene|sky`.
+Dawn, day, dusk and night each have their own photo. Dawn and dusk pick a different one every day. Switch between the nature photo and a soft gradient sky right on the tab (top right), or with `tab theme photo|scene|sky`.
 
 ![The tab at dawn, day, dusk and night](docs/img/readme/looks.jpg)
 
