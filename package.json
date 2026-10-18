@@ -11,5 +11,11 @@
     "node": ">=20"
   },
   "repository": "github:anup-a/stilltab",
-  "homepage": "https://anup-a.github.io/stilltab/"
+  "homepage": "https://anup-a.github.io/stilltab/",
+  "files": [
+    "bin",
+    "lib",
+    "extension",
+    "skill"
+  ]
 }
