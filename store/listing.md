@@ -65,6 +65,7 @@ No. All JavaScript is packaged in the extension. The page loads site icons (imag
 - Screenshots (1280x800): store/1-hero-dusk.png, 2-expanded.png, 3-reading.png, 4-setup.png, 5-sky.png
 - Small promo tile (440x280): store/promo-440x280.png
 - Upload: store/stilltab-0.1.0.zip (contents of extension/)
+- Promo video: /Users/owl/code/videos/stilltab-motion/renders/stilltab-v4.mp4 (14s, 1920x1080). The store takes a YouTube URL only: upload (unlisted) after Anup confirms, then paste the link.
 
 ## Links
 - Homepage: https://anup-a.github.io/stilltab/
