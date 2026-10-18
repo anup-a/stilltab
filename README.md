@@ -48,7 +48,7 @@ The Chrome Web Store listing is on its way. Until then, load it from the package
 open "$(npm root -g)/stilltab/extension"     # macOS: shows the folder
 ```
 
-Or download `stilltab-0.1.0.zip` from [Releases](https://github.com/anup-a/stilltab/releases/latest) and unzip it.
+Or download `stilltab-0.1.1.zip` from [Releases](https://github.com/anup-a/stilltab/releases/latest) and unzip it.
 
 Go to `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick that `extension` folder.
 
