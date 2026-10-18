@@ -14,31 +14,38 @@ English
 
 ## Description
 
-Stilltab turns every new tab into one quiet page that your AI agents keep up to date.
+Stilltab works with Claude Code, Codex or any command line agent. Your agent decides what matters most right now and keeps the page tidy, on a schedule you choose.
 
-Open a tab and you see what needs you, what's coming up and what just finished, in a few short lines over a photo that follows the time of day. No feeds to scroll, no widgets to arrange. Your agents decide what matters most right now and keep the page tidy.
+🌅 Calm by default
+• A beautiful photo that follows the time of day: dawn, day, dusk and night
+• A different dawn and dusk photo every day
+• Switch to a soft gradient sky in one click
+• At most six short lines. Done things leave on their own
 
-HOW IT WORKS
-1. Install the extension and the small `tab` command line tool (free, open source).
-2. Your first new tab shows one prompt. Paste it into Claude Code, Codex or any AI agent in your terminal.
-3. The agent asks which parts of your life to look after (work, calendar, inbox, travel, money, habits), how often to refresh and what the page should show. Then it sets everything up.
-4. From then on it runs on its own schedule. Each run it looks at your repos, calendar, mail and notes, ranks what matters, and updates the tab.
+🤖 Run by your agents
+• Needs you, Coming up, Lately: one line each, with a short number like "3 open" or "12 days"
+• A one-line brief from your agent about what matters most today
+• Click any line for details. Tick, dismiss or reorder, and your agent adapts on its next run
+• A routine: your agent refreshes the tab every few hours, headless, in quiet hours you set
 
-WHAT'S ON THE PAGE
-• Needs you, Coming up, Lately: one line each, with a short number like "3 open" or "12 days". Click to see details. Tick or dismiss, and your agent adapts next run.
-• A one-line brief from your agent about what matters most today.
-• Search, plus shortcuts to ask Claude, ChatGPT, Gemini and others.
-• Plan usage for Claude Code and Codex, so you know how much of your limits are left.
-• Weather next to the time.
-• Your most visited sites, if you want them.
-• Today's reading: headlines from topics and feeds you choose, in Chrome's side panel.
-• Four looks for dawn, day, dusk and night: sharp photos, a soft blur or a gradient sky.
+📊 Plan usage at a glance
+• Session and weekly usage for Claude Code and Codex
+• Exactly when each limit renews
 
-WORKS WITH ANY AGENT
-Claude Code, Codex, Gemini CLI, OpenCode, or anything that can run a shell command. Agents talk to the page through one small command line tool, so nothing is locked to one provider.
+🔎 Everything else you open a tab for
+• Search with your own search engine
+• One-click shortcuts to ask your favorite AI chat app
+• Your most visited sites, if you want them
+• Weather next to the time
+• Today's reading: headlines from topics and feeds you pick, in Chrome's side panel
 
-PRIVATE BY DESIGN
-Your tab's contents live in a file on your own computer and are served by a small local server at 127.0.0.1. No accounts, no analytics, no servers of ours.
+⚡ Set up in one paste
+1. Install the free, open source tab command: npm i -g github:anup-a/stilltab
+2. Open a new tab and copy the prompt it shows
+3. Paste it into your agent. It asks a few questions and sets everything up
+
+🔒 Private by design
+Everything lives in a file on your own computer and is served from 127.0.0.1. No accounts, no analytics, no servers of ours.
 
 Setup guide and source: https://github.com/anup-a/stilltab
 Privacy policy: https://anup-a.github.io/stilltab/privacy.html
@@ -62,10 +69,10 @@ No. All JavaScript is packaged in the extension. The page loads site icons (imag
 
 ## Assets
 - Icon: extension/icons/icon128.png (96px art, 16px padding)
-- Screenshots (1280x800): store/1-hero-dusk.png, 2-expanded.png, 3-reading.png, 4-setup.png, 5-sky.png
-- Small promo tile (440x280): store/promo-440x280.png
-- Upload: store/stilltab-0.1.0.zip (contents of extension/)
-- Promo video (approved): 4K60 master /Users/owl/code/videos/stilltab-onetake/film.mp4 (15s, with sound); 1080p60 web copy film-1080p60.mp4 (https://yf6yczb3tgbjmvqq.byagent.dev/). The store takes a YouTube URL only: upload the 4K master (unlisted) after Anup confirms, then paste the link.
+- Screenshots (1280x800): store/1-hero.jpg, 2-lines.jpg, 3-usage.jpg, 4-reading.jpg, 5-setup.jpg
+- Small promo tile (440x280): store/promo-440x280.jpg; marquee (1400x560): store/marquee-1400x560.jpg
+- Upload: store/stilltab-0.1.1.zip (contents of extension/)
+- Promo video (removed from the listing on 2026-10-18: the YouTube thumbnail looked low quality): 4K60 master /Users/owl/code/videos/stilltab-onetake/film.mp4 (15s, with sound); 1080p60 web copy film-1080p60.mp4 (https://yf6yczb3tgbjmvqq.byagent.dev/). The store takes a YouTube URL only: upload the 4K master (unlisted) after Anup confirms, then paste the link.
 
 ## Links
 - Homepage: https://anup-a.github.io/stilltab/

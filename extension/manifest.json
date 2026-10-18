@@ -3,7 +3,7 @@
   "name": "Stilltab: New Tab Dashboard for AI Agents",
   "short_name": "Stilltab",
   "description": "Your AI agents keep one calm new tab current: what needs you, what's coming up, plan usage, weather and today's reading.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minimum_chrome_version": "116",
   "homepage_url": "https://github.com/anup-a/stilltab",
   "icons": {
