@@ -292,7 +292,7 @@ function renderWeather(w) {
 
 // --- first run: hand setup to the user's agent -------------------------------
 
-const SETUP_PROMPT = 'Set up my Stilltab new tab: run `tab onboard` and follow it. If the `tab` command is missing, run `npm link` in the folder I loaded the Stilltab extension from (or install it with `npm i -g github:anup-a/stilltab`), then run `tab onboard`.'
+const SETUP_PROMPT = 'Set up my Stilltab new tab. If the `tab` command is missing, install it with `npm i -g github:anup-a/stilltab` (needs Node 20+). Then run `tab onboard` and follow it.'
 if ($('setup')) {
   $('setup-text').textContent = SETUP_PROMPT
   $('setup-copy').addEventListener('click', () => {

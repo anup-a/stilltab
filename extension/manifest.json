@@ -1,19 +1,49 @@
 {
   "manifest_version": 3,
-  "name": "Stilltab",
-  "description": "A calm new tab your agents run, plus a reading sidebar.",
-  "version": "0.0.8",
+  "name": "Stilltab: New Tab Dashboard for AI Agents",
+  "short_name": "Stilltab",
+  "description": "Your AI agents keep one calm new tab current: what needs you, what's coming up, plan usage, weather and today's reading.",
+  "version": "0.1.0",
   "minimum_chrome_version": "116",
-  "action": { "default_title": "Toggle today's reading" },
-  "chrome_url_overrides": { "newtab": "newtab.html" },
-  "side_panel": { "default_path": "feed.html" },
-  "background": { "service_worker": "background.js" },
+  "homepage_url": "https://github.com/anup-a/stilltab",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Toggle today's reading",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "side_panel": {
+    "default_path": "feed.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "commands": {
     "_execute_action": {
-      "suggested_key": { "default": "Alt+Shift+N", "mac": "Alt+Shift+N" },
+      "suggested_key": {
+        "default": "Alt+Shift+N",
+        "mac": "Alt+Shift+N"
+      },
       "description": "Toggle today's reading"
     }
   },
-  "permissions": ["sidePanel", "search", "topSites"],
-  "host_permissions": ["http://127.0.0.1:7777/*"]
+  "permissions": [
+    "sidePanel",
+    "search",
+    "topSites"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:7777/*"
+  ]
 }

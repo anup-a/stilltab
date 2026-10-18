@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stilltab privacy policy</title>
+  <meta name="description" content="Stilltab keeps your new tab's contents on your own computer. No accounts, no analytics, no servers of ours.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .policy { max-width: 680px; margin: 0 auto; padding: clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px) 0; }
+    .policy h1 { font-size: clamp(36px, 5vw, 52px); line-height: 1.1; }
+    .policy h2 { font-size: 24px; text-align: left; margin-top: 40px; }
+    .policy p, .policy li { color: var(--ink-2); font-size: 17px; }
+    .policy li { margin: 8px 0; }
+    .policy .when { color: var(--ink-3); font-size: 14px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Stilltab</a>
+    <nav><a class="pill" href="https://github.com/anup-a/stilltab">GitHub</a></nav>
+  </header>
+
+  <main class="policy">
+    <h1>Privacy policy</h1>
+    <p class="when">Last updated 18 October 2026</p>
+
+    <p>Stilltab is a new tab page that your own AI agents keep up to date. It is built so that what's on your tab stays on your computer. There are no Stilltab accounts, no analytics and no servers run by us.</p>
+
+    <h2>What stays on your computer</h2>
+    <ul>
+      <li>Everything on the tab (the lines your agents pin, the brief, your settings and what you tick or dismiss) is stored in a file in your home folder (<code>~/.stilltab</code>).</li>
+      <li>The extension reads and writes it through a small server that runs on your own machine at <code>127.0.0.1:7777</code>. That address is only reachable from your computer.</li>
+      <li>Your agents (for example Claude Code or Codex) run on your machine, under your own accounts, on a schedule you choose. Stilltab does not see or relay what they do.</li>
+    </ul>
+
+    <h2>What the extension uses in Chrome</h2>
+    <ul>
+      <li><strong>Search:</strong> typing in the search box hands the query to your default search engine, exactly as Chrome's own new tab does.</li>
+      <li><strong>Most visited sites:</strong> if you turn on the sites row, the extension reads Chrome's list of your most visited sites to show them on the tab. The list is not saved or sent anywhere.</li>
+      <li><strong>Side panel:</strong> Today's reading opens in Chrome's side panel.</li>
+    </ul>
+
+    <h2>Requests that leave your computer</h2>
+    <ul>
+      <li><strong>Site icons:</strong> the small icons next to shortcuts, sites and headlines are loaded from Google's public favicon service, which receives the site's domain name.</li>
+      <li><strong>Today's reading:</strong> the local server fetches headlines from the news sources and RSS feeds you pick.</li>
+      <li><strong>Weather:</strong> if you turn it on, the local server asks Open-Meteo for the forecast for the city you choose. Open-Meteo needs no account or key.</li>
+      <li><strong>Plan usage:</strong> if you turn it on, the local server asks your AI providers (such as Anthropic and OpenAI) how much of your plan you've used, with the sign-in you already have on your machine. Those credentials are read only, never copied or sent anywhere else.</li>
+    </ul>
+
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We don't collect, sell or share personal data.</li>
+      <li>We don't track browsing history, use analytics or show ads.</li>
+      <li>We don't run any server that receives your data.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Questions or concerns: open an issue at <a href="https://github.com/anup-a/stilltab/issues">github.com/anup-a/stilltab</a>.</p>
+  </main>
+
+  <footer class="foot">
+    <p>Stilltab is an early, open project.</p>
+    <p><a href="./">Home</a></p>
+  </footer>
+</body>
+</html>
