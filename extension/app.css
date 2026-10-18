@@ -493,12 +493,9 @@ body:has(.drawer:not([hidden])) .reading-toggle { right: 400px; }
 }
 
 /* --- "scene" look: a blurred landscape per time of day, light text, glass on top ---
-   The photos are 96px thumbnails; at this blur nobody can tell, and they weigh ~2 KB each. */
+   The photos are 96px thumbnails; at this blur nobody can tell, and they weigh ~2 KB each.
+   Which one shows is set in app.js (showPhoto): dawn and dusk change daily. */
 
-body[data-scene="dawn"]  { --scene: url(scenes/dawn.jpg); }
-body[data-scene="day"]   { --scene: url(scenes/day.jpg); }
-body[data-scene="dusk"]  { --scene: url(scenes/dusk.jpg); }
-body[data-scene="night"] { --scene: url(scenes/night.jpg); }
 
 /* color-scheme on the root too: an iframe whose scheme differs from its host's gets an opaque backdrop. */
 :root { color-scheme: light; }
@@ -551,10 +548,6 @@ body[data-page="feed"][data-look="scene"] .sky::after { background: rgba(14, 14,
    Builds on data-look="scene" (white ink, matte, glass drawer) and takes boxes away:
    no card behind the list, AI shortcuts only once you type, quiet edges. */
 
-body[data-photo][data-scene="dawn"]  { --photo: url(photos/dawn.jpg); }
-body[data-photo][data-scene="day"]   { --photo: url(photos/day.jpg); }
-body[data-photo][data-scene="dusk"]  { --photo: url(photos/dusk.jpg); }
-body[data-photo][data-scene="night"] { --photo: url(photos/night.jpg); }
 /* the 2 KB thumbnail paints first and the full photo lands on top of it */
 body[data-photo] .sky::before { inset: 0; background: var(--photo) center / cover, var(--scene) center / cover; filter: none; }
 body[data-photo] .sky::after {

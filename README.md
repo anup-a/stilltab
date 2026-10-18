@@ -1,12 +1,32 @@
 # Stilltab
 
-A calm new tab your agents run, plus a reading sidebar. Agents write to the new tab with the `tab` CLI. Today's reading lives in Chrome's side panel: toggle it with the "Today's reading" button on the new tab, the toolbar button, or ⌥⇧N, and it stays put while you switch tabs. Opened as a plain web page (http://127.0.0.1:7777, any browser), the same button slides the reading in as a drawer. Your clicks (dismiss, tick, open) flow back so agents can tidy it.
+**A calm new tab your AI agents keep current.**
+
+Every new tab shows one quiet page: what needs you, what's coming up, what just finished, over a photo that follows the time of day. Your agents (Claude Code, Codex, Gemini CLI, OpenCode, anything that can run a command) decide what matters most and keep it tidy through a small CLI, `tab`. Today's reading lives in Chrome's side panel.
+
+![Stilltab at dusk](docs/img/hero-dusk.jpg)
+
+[Website](https://anup-a.github.io/stilltab/) · [Privacy](https://anup-a.github.io/stilltab/privacy.html)
+
+- **Needs you, Coming up, Lately:** one line each with a short number ("3 open", "12 days"). Tick or dismiss and your agent adapts next run.
+- **A routine:** your agent runs headless on a schedule you choose and refreshes the page.
+- **Plan usage** for Claude Code and Codex, **weather**, AI shortcuts, your most visited sites, and **Today's reading** from topics and feeds you pick.
+- **Private:** everything lives in `~/.stilltab` on your machine, served from 127.0.0.1. No accounts, no analytics.
+
+## Quick start
+
+```
+npm i -g github:anup-a/stilltab     # the `tab` command (Node 20+)
+```
+Install the extension (Chrome Web Store, or Load unpacked from `extension/`), open a new tab, and paste the prompt it shows into your agent. The agent asks a few questions and sets everything up.
+
+More detail: Today's reading toggles with the "Today's reading" button on the new tab, the toolbar button, or ⌥⇧N, and stays put while you switch tabs. Opened as a plain web page (http://127.0.0.1:7777, any browser), the same button slides the reading in as a drawer.
 
 ## Setup
 
 You need Node 20+ and Chrome (or any browser, as a plain page).
 
-1. **Get the code and the `tab` command**
+1. **Get the code and the `tab` command** (or just `npm i -g github:anup-a/stilltab`)
    ```
    git clone https://github.com/anup-a/stilltab ~/stilltab && cd ~/stilltab
    npm link            # puts `tab` on your PATH (or: ln -s "$PWD/bin/tab.mjs" ~/.local/bin/tab)
@@ -35,20 +55,18 @@ Change anything later by asking your agent ("hide the weather", "refresh every h
 
 ## How it works
 
-- `bin/tab.mjs` — CLI agents call (`pin`, `set`, `brief`, `notice`, `layout`, `read`, `events`, …)
-- `lib/server.mjs` — state file → live updates (SSE); serves sandboxed HTML widgets at `/w/:id`
-- `extension/` — MV3: `newtab.html` (greeting, search, AI shortcuts, agents' lines) and `feed.html` (side panel, headlines only); one shared `app.js`/`app.css`; `background.js` toggles the panel. Paints from cache, animates only what changed; sky follows time of day
-- `lib/news.mjs` — Today's reading: RSS/Atom presets per topic (tech, ai, science, design, business, world, sports) + custom feeds, refreshed once a day, interleaved so no source dominates
-- `lib/usage.mjs` — the usage pill at the top left: how much of each Claude Code and Codex rate-limit window (5 hours, week) you've used. Read-only, from each tool's own login (Claude Code's keychain entry, `~/.codex`) or Codex's session logs; polled every 5 minutes, only while a new tab is open. Hover for reset times
-- `lib/onboard.mjs` — `tab onboard` (the setup interview agents follow) and `tab routine prompt` (what each scheduled run follows)
-- `lib/routine.mjs` — background jobs: `tab autostart` (server at login) and `tab routine` (your agent on a schedule, with quiet hours). launchd on macOS; prints a crontab line elsewhere
-- `lib/weather.mjs` — weather beside the time (Open-Meteo, no key), every 30 minutes while a tab is open
-- `skill/SKILL.md` — teaches agents the rules (calm, ≤6 widgets, use `--ttl`, read `events`)
+- `bin/tab.mjs`: CLI agents call (`pin`, `set`, `brief`, `notice`, `layout`, `read`, `events`, …)
+- `lib/server.mjs`: state file → live updates (SSE); serves sandboxed HTML widgets at `/w/:id`
+- `extension/`: MV3: `newtab.html` (greeting, search, AI shortcuts, agents' lines) and `feed.html` (side panel, headlines only); one shared `app.js`/`app.css`; `background.js` toggles the panel. Paints from cache, animates only what changed; sky follows time of day
+- `lib/news.mjs`: Today's reading: RSS/Atom presets per topic (tech, ai, science, design, business, world, sports) + custom feeds, refreshed once a day, interleaved so no source dominates
+- `lib/usage.mjs`: the usage pill at the top left: how much of each Claude Code and Codex rate-limit window (5 hours, week) you've used. Read-only, from each tool's own login (Claude Code's keychain entry, `~/.codex`) or Codex's session logs; polled every 5 minutes, only while a new tab is open. Hover for reset times
+- `lib/onboard.mjs`: `tab onboard` (the setup interview agents follow) and `tab routine prompt` (what each scheduled run follows)
+- `lib/routine.mjs`: background jobs: `tab autostart` (server at login) and `tab routine` (your agent on a schedule, with quiet hours). launchd on macOS; prints a crontab line elsewhere
+- `lib/weather.mjs`: weather beside the time (Open-Meteo, no key), every 30 minutes while a tab is open
+- `skill/SKILL.md`: teaches agents the rules (calm, ≤6 widgets, use `--ttl`, read `events`)
 
 Security: only the extension or the local page can read state (other origins get 403). Agent HTML runs in an opaque-origin sandbox and can't reach the page, cookies or tabs. Search always goes through the user's own search engine (`chrome.search`).
 
-Next: swap the local server for byagent (token + API), so agents anywhere can write to your tab.
-
 ## Looks
 
-`tab theme sky` (default) is the soft drifting gradient. `tab theme scene` swaps it for a blurred landscape that follows the time of day (dawn, day, dusk, night), with light text and the agents' lines on one glass card. The scenes are 96px Unsplash thumbnails via picsum.photos (Unsplash license), ~2 KB each, blurred up in CSS. `tab theme photo` shows the same four photos sharp and full size (2400px, ~200 to 650 KB each, in `extension/photos/`), with the agents' lines straight on the picture and the AI shortcuts hidden until you type.
+`tab theme sky` (default) is the soft drifting gradient. `tab theme scene` swaps it for a blurred landscape that follows the time of day (dawn, day, dusk, night), with light text and the agents' lines on one glass card. The scenes are 96px Unsplash thumbnails via picsum.photos (Unsplash license), ~2 KB each, blurred up in CSS. `tab theme photo` shows the photos sharp and full size (2400px, ~100 to 650 KB each, in `extension/photos/`; dawn and dusk each have several and show a different one every day, credits in `extension/photos/CREDITS.md`), with the agents' lines straight on the picture and the AI shortcuts hidden until you type.

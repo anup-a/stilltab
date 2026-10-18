@@ -97,12 +97,29 @@ function phase(h) {
 }
 const dark = matchMedia('(prefers-color-scheme: dark)')
 
+// Dawn and dusk have several photos and show a different one each day; day and night have one.
+// Stepping by 5 visits every photo before repeating, in an order that doesn't look sequential.
+const PHOTOS = { dawn: 6, dusk: 7 }
+function photoFor(p, d) {
+  if (!PHOTOS[p]) return p
+  const day = Math.floor((d - d.getTimezoneOffset() * 6e4) / 864e5)
+  return `${p}-${(day * 5) % PHOTOS[p]}`
+}
+let shownPhoto
+function showPhoto(name) {
+  if (name === shownPhoto) return
+  shownPhoto = name
+  document.body.style.setProperty('--scene', `url(scenes/${name}.jpg)`) // 2 KB thumbnail, blurred in the scene look
+  document.body.style.setProperty('--photo', `url(photos/${name}.jpg)`) // full photo, only loaded in the photo look
+}
+
 function tick() {
   const d = new Date()
   const h = d.getHours()
   const p = phase(h)
   document.body.dataset.phase = p === 'night' ? 'dusk' : p
   document.body.dataset.scene = p // which photo the "scene" look shows
+  showPhoto(photoFor(p, d))
   document.body.dataset.theme = p === 'night' || dark.matches ? 'dark' : 'light'
   if ($('feed-date')) $('feed-date').textContent = d.toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' })
   if (!$('greet')) return

@@ -7,23 +7,24 @@
   <meta name="description" content="Stilltab keeps your new tab's contents on your own computer. No accounts, no analytics, no servers of ours.">
   <link rel="stylesheet" href="style.css">
   <style>
-    .policy { max-width: 680px; margin: 0 auto; padding: clamp(56px, 8vw, 96px) clamp(20px, 4vw, 48px) 0; }
-    .policy h1 { font-size: clamp(36px, 5vw, 52px); line-height: 1.1; }
-    .policy h2 { font-size: 24px; text-align: left; margin-top: 40px; }
-    .policy p, .policy li { color: var(--ink-2); font-size: 17px; }
+    .policy { max-width: 680px; margin: 0 auto; padding: 120px 0 120px; }
+    .policy h1 { font-size: clamp(40px, 6vw, 64px); line-height: 1.05; }
+    .policy h2 { font-size: 24px; margin-top: 40px; }
+    .policy p, .policy li { color: var(--ink-2); font-size: 16.5px; }
     .policy li { margin: 8px 0; }
-    .policy .when { color: var(--ink-3); font-size: 14px; margin-top: 12px; }
+    .policy strong { color: var(--ink); font-weight: 500; }
+    .policy .time { margin-bottom: 16px; }
   </style>
 </head>
 <body>
-  <header class="nav">
-    <a class="brand" href="./"><span class="mark" aria-hidden="true"></span>Stilltab</a>
-    <nav><a class="pill" href="https://github.com/anup-a/stilltab">GitHub</a></nav>
+  <div class="sky" aria-hidden="true"><div class="photo" data-p="night" style="opacity:1"></div><div class="veil" style="background:rgba(18,14,20,.55)"></div></div>
+  <header class="edges top">
+    <a class="glass brand" href="./"><span class="mark" aria-hidden="true"></span>Stilltab</a>
+    <a class="glass" href="https://github.com/anup-a/stilltab">GitHub</a>
   </header>
-
-  <main class="policy">
+  <main class="frame"><article class="policy">
+    <p class="time">Last updated 18 October 2026</p>
     <h1>Privacy policy</h1>
-    <p class="when">Last updated 18 October 2026</p>
 
     <p>Stilltab is a new tab page that your own AI agents keep up to date. It is built so that what's on your tab stays on your computer. There are no Stilltab accounts, no analytics and no servers run by us.</p>
 
@@ -58,11 +59,6 @@
 
     <h2>Contact</h2>
     <p>Questions or concerns: open an issue at <a href="https://github.com/anup-a/stilltab/issues">github.com/anup-a/stilltab</a>.</p>
-  </main>
-
-  <footer class="foot">
-    <p>Stilltab is an early, open project.</p>
-    <p><a href="./">Home</a></p>
-  </footer>
+  </article></main>
 </body>
 </html>

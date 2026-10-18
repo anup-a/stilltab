@@ -1,9 +1,15 @@
 {
   "name": "stilltab",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
-  "description": "A calm new tab your agents run. POC.",
+  "description": "A calm new tab your AI agents keep current.",
   "type": "module",
-  "bin": { "tab": "bin/tab.mjs" },
-  "engines": { "node": ">=20" }
+  "bin": {
+    "tab": "bin/tab.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": "github:anup-a/stilltab",
+  "homepage": "https://anup-a.github.io/stilltab/"
 }
