@@ -326,10 +326,11 @@ function renderWeather(w) {
 // --- first run: hand setup to the user's agent -------------------------------
 
 const SETUP_PROMPT = 'Set up my Stilltab new tab. If the `tab` command is missing, install it with `npm i -g github:anup-a/stilltab` (needs Node 20+). Then run `tab onboard` and follow it.'
+const CHANGE_PROMPT = 'Change my Stilltab new tab. Run `tab onboard` and follow it, keeping what I already have unless I say otherwise.'
 if ($('setup')) {
   $('setup-text').textContent = SETUP_PROMPT
   $('setup-copy').addEventListener('click', () => {
-    navigator.clipboard?.writeText(SETUP_PROMPT).catch(() => {})
+    navigator.clipboard?.writeText($('setup-text').textContent).catch(() => {})
     $('setup-copy').textContent = 'Copied'
     setTimeout(() => { $('setup-copy').textContent = 'Copy' }, 2000)
   })
@@ -350,6 +351,7 @@ const showSetup = (on) => {
   // after setup, the same popup is for changing things
   $('setup-title').textContent = on ? 'Let your agent set up this tab' : 'Change what your agents show here'
   $('setup-skip').hidden = !on
+  $('setup-text').textContent = on ? SETUP_PROMPT : CHANGE_PROMPT
   if (on && !d.open && !setupClosed) d.showModal()
   if (!on && d.open && !d.dataset.manual) d.close()
 }
@@ -359,6 +361,7 @@ const showSetup = (on) => {
 function connect() {
   const es = new EventSource(`${API}/api/events`)
   es.onmessage = (e) => {
+    clearTimeout(firstRunTimer)
     setStatus('live', 'agents connected')
     if (!column) return
     localStorage.setItem('stilltab:state', e.data)
@@ -380,10 +383,14 @@ function connect() {
     setStatus('off', 'agents resting')
     if (!column || rows.size) return // keep what's on screen; it reconnects by itself
     const fresh = !localStorage.getItem('stilltab:state') // just installed: nothing has ever run
-    showSetup(fresh)
-    resting(!fresh)
+    if (!fresh) return resting(true)
+    // Fresh install: the server may be running but not answered yet (or restarting).
+    // Give EventSource a few retries before asking the user to install anything.
+    clearTimeout(firstRunTimer)
+    firstRunTimer = setTimeout(() => { showSetup(true); resting(false) }, 6000)
   }
 }
+let firstRunTimer
 
 // Paint the last known state instantly, without animation, then go live.
 for (const [key, fn] of [['stilltab:state', (d) => render(d)], ['stilltab:news', (d) => renderNews(d)], ['stilltab:usage', (d) => renderUsage(d)], ['stilltab:weather', (d) => renderWeather(d)]]) {

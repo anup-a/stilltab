@@ -42,7 +42,10 @@ npm i -g github:anup-a/stilltab
 
 **2. Add the extension to Chrome**
 
-The Chrome Web Store listing is on its way. Until then, load it from the package you just installed:
+Install [Stilltab from the Chrome Web Store](https://chromewebstore.google.com/detail/stilltab-new-tab-dashboar/fjmecibhjnipnfdfijibhileleaoampk).
+
+<details>
+<summary>Or load it unpacked</summary>
 
 ```
 open "$(npm root -g)/stilltab/extension"     # macOS: shows the folder
@@ -51,6 +54,8 @@ open "$(npm root -g)/stilltab/extension"     # macOS: shows the folder
 Or download `stilltab-0.1.1.zip` from [Releases](https://github.com/anup-a/stilltab/releases/latest) and unzip it.
 
 Go to `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick that `extension` folder.
+
+</details>
 
 **3. Open a new tab and copy the prompt**
 
